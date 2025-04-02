@@ -1,0 +1,54 @@
+# Java 파일
+*.class
+*.jar
+*.war
+*.ear
+
+# Eclipse, IntelliJ IDEA 등의 IDE 설정 파일
+.idea/
+.project
+.classpath
+.settings/
+
+# NetBeans 설정 파일
+nbproject/
+
+# Maven, Gradle 빌드 관련 파일
+target/
+build/
+
+# .mvn, .gradle 설정 파일
+.mvn/
+.gradle/
+
+# Tomcat 관련 파일 (웹 서버 관련 아티팩트)
+*.log
+*.out
+logs/
+work/
+temp/
+
+# 환경 변수 파일
+.env
+.env.local
+.env.*.local
+
+# OS 관련 파일
+.DS_Store
+Thumbs.db
+
+# 파일 생성 후 관리하지 않는 임시 파일들
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+
+# 테스트 결과 폴더
+/coverage/
+
+# 기타 바이너리 파일들
+*.bak
+
+Servers/
+.metadata/
