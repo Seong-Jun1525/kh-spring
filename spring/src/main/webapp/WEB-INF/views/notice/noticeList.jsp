@@ -108,7 +108,7 @@
 
             <br clear="both">
 
-            <form action="" id="searchForm">
+            <form action="search" id="searchForm">
                 <div class="text">
                     <input type="text" class="form-control" name="keyword" placeholder="검색할 제목을 입력하세요.">
                 </div>
@@ -119,7 +119,7 @@
     </div>
     
     <script>
-    	onload = function() {
+    	window.addEventListener("load", function() {
     		const noticeTrArr = document.querySelectorAll("#noticeList tbody tr");
     		
     		for(const ele of noticeTrArr) {
@@ -128,7 +128,7 @@
 	    			location.href = "/notice/noticeDetail?noticeNo=" + ele.children[0].innerText;
 	    		}
     		}
-    	}
+    	});
     </script>
 
     <%-- footer --%>

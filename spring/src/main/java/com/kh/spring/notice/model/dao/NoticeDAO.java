@@ -1,5 +1,6 @@
 package com.kh.spring.notice.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -41,5 +42,13 @@ public class NoticeDAO {
 
 	public int updateNotice(Notice notice) {
 		return sqlSession.update("noticeMapper.updateNotice", notice);
+	}
+
+	public int deleteNotice(int noticeNo) {
+		return sqlSession.update("noticeMapper.deleteNotice", noticeNo);
+	}
+
+	public List<Notice> selectNoticeByNoticeTitle(String keyword) {
+		return sqlSession.selectList("noticeMapper.selectNoticeByNoticeTitle", keyword);
 	}
 }

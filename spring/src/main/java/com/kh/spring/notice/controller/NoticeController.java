@@ -16,9 +16,23 @@ import com.kh.spring.notice.service.NoticeService;
 
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * 해당 클래스를 Controller로 등록하기 위해서 @Controller 어노테이션으로 사용하여 등록한다!
+ * 
+ * 해당 컨트롤러로 들어오는 매핑주소가 공통 경로로 들어올 경우 @RequestMapping("/공통경로명")
+ * 어노테이션을 사용한다!
+ */
+
 @Controller
 @RequestMapping("/notice") // 주소 시험 나옴!
 public class NoticeController {
+
+	/**
+	 * 생성자 주입 방식으로 서비스를 생성한다
+	 * 
+	 * 생성자 주입 방식
+	 * => 생성자를 통해 의존 관계를 주입하는 방식
+	 */
 	private final NoticeService nService;
 
 	@Autowired
@@ -26,6 +40,7 @@ public class NoticeController {
 		this.nService = nService;
 	}
 
+	// 공지사항 목록 페이지 연결
 	@GetMapping("/list") // 주소 시험 나옴!
 	public ModelAndView noticeList(ModelAndView mv) {
 		
@@ -43,13 +58,14 @@ public class NoticeController {
 		return mv;
 	}
 	
+	// 공지사항 상세페이지 연결
 	@GetMapping("/noticeDetail")
 	public ModelAndView noticeDetail(@RequestParam(defaultValue="0") int noticeNo, ModelAndView mv) {
 		
 		System.out.println(noticeNo);
 		
 		Notice n = nService.selectNoticeById(noticeNo);
-		System.out.println(n);
+//		System.out.println(n);
 
 		mv.addObject("notice", n);
 		mv.setViewName("notice/noticeDetail");
@@ -57,11 +73,13 @@ public class NoticeController {
 		return mv;
 	}
 	
+	// 공지사항 등록 페이지 연결
 	@GetMapping("/write")
 	public String noticeWritePage() {
 		return "notice/enrollForm";
 	}
 	
+	// 공지사항 등록 요청
 	@PostMapping("/insertNotice")
 	public String insertNotice(Notice notice, HttpSession session, Model model) {
 		
@@ -70,14 +88,16 @@ public class NoticeController {
 		int result = nService.insertNotice(notice);
 		
 		if(result > 0) {
-			session.setAttribute("alertMsg", "글 작성에 성공했습니다!");
+			session.setAttribute("alertTitle", "공지사항 작성");
+			session.setAttribute("alertMsg", "공지사항 작성에 성공했습니다!");
 			return "redirect:/";
 		} else {
-			model.addAttribute("errorMsg", "게시글 작성에 실패했습니다.");
+			model.addAttribute("errorMsg", "공지사항 작성에 실패했습니다.");
 			return "common/errorPage";
 		}
 	}
 	
+	// 공지사항 수정 페이지 연결
 	@GetMapping("/updateNoticePage")
 	public ModelAndView updateNoticePage(@RequestParam(defaultValue="0") int noticeNo, ModelAndView mv) {
 		
@@ -92,17 +112,49 @@ public class NoticeController {
 		return mv;
 	}
 	
-	@PostMapping("/updateNotice/*")
+	// 공지사항 수정 요청
+	@PostMapping("/updateNotice")
 	public String updateNotice(@RequestParam(defaultValue="0") int noticeNo, Notice notice, HttpSession session, Model model) {
-		System.out.println(notice);
+		System.out.println("post notice : " + notice);
 		
 		int result = nService.updateNotice(notice);
 		if(result > 0) {
-			session.setAttribute("alertMsg", "글 작성에 성공했습니다!");
-			return "redirect:/";
+			session.setAttribute("alertTitle", "공지사항 수정");
+			session.setAttribute("alertMsg", "공지사항 수정에 성공했습니다!");
+			return "redirect:/notice/noticeDetail?noticeNo=" + noticeNo;
 		} else {
-			model.addAttribute("errorMsg", "게시글 작성에 실패했습니다.");
+			model.addAttribute("errorMsg", "공지사항 수정에 실패했습니다.");
 			return "common/errorPage";
 		}
+	}
+	
+	// 공지사항 삭제 요청
+	@GetMapping("/deleteNotice")
+	public String deleteNotice(@RequestParam(defaultValue="0") int noticeNo, HttpSession session, Model model) {
+		System.out.println(noticeNo);
+		
+		int result = nService.deleteNotice(noticeNo);
+		
+		if(result > 0) {
+			session.setAttribute("alertTitle", "공지사항 삭제");
+			session.setAttribute("alertMsg", "공지사항 삭제에 성공했습니다!");
+			return "redirect:/notice/list";
+		} else {
+			model.addAttribute("errorMsg", "공지사항 삭제에 실패했습니다.");
+			return "common/errorPage";
+		}
+	}
+	
+	// 공지사항 검색 요청
+	@GetMapping("/search")
+	public ModelAndView searchNotice(@RequestParam String keyword, ModelAndView mv) {
+		// System.out.println(keyword);
+		
+		ArrayList<Notice> nSearchList = nService.selectNoticeByNoticeTitle(keyword);
+		
+		mv.addObject("nList", nSearchList);
+		mv.setViewName("notice/noticeList");
+
+		return mv;
 	}
 }

@@ -16,12 +16,26 @@
 		WHERE NOTICE_NO = #{ noticeNo }
 	</select>
 	
+	<select id="selectNoticeByNoticeTitle" resultType="Notice">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_WRITER, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+		FROM NOTICE
+		WHERE NOTICE_TITLE LIKE '%' || #{noticeTitle} || '%'
+		ORDER BY NOTICE_NO DESC
+	</select>
+	
 	<insert id="insertNotice">
 		INSERT INTO NOTICE
 		VALUES(SEQ_NNO.NEXTVAL, #{noticeTitle}, #{noticeWriter}, #{noticeContent}, DEFAULT)
 	</insert>
 	
 	<update id="updateNotice">
-		
+		UPDATE NOTICE SET
+			NOTICE_TITLE = #{noticeTitle},
+			NOTICE_CONTENT = #{noticeContent}
+		WHERE NOTICE_WRITER = #{noticeWriter} AND NOTICE_NO = #{noticeNo}
 	</update>
+	
+	<delete id="deleteNotice">
+		DELETE FROM NOTICE WHERE NOTICE_NO = #{noticeNo}
+	</delete>
 </mapper>

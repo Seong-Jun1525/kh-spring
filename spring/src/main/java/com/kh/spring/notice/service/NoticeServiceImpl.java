@@ -43,8 +43,12 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public int deleteNotice(int noticeNo) {
-		// TODO Auto-generated method stub
-		return 0;
+		return nDAO.deleteNotice(noticeNo);
+	}
+
+	@Override
+	public ArrayList<Notice> selectNoticeByNoticeTitle(String keyword) {
+		return (ArrayList<Notice>) nDAO.selectNoticeByNoticeTitle(keyword);
 	}
 
 }

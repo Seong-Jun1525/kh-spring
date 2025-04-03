@@ -22,6 +22,7 @@
 </head>
 <body>
 	<%
+		String alertTitle = (String) session.getAttribute("alertTitle");
 		String alertMsg = (String) session.getAttribute("alertMsg");
 		Member loginMember = (Member) session.getAttribute("loginMember");
 	%>
@@ -86,7 +87,7 @@
       <script>
 			<% if(alertMsg != null) { %>
 					Swal.fire({
-						title: "회원가입",
+						title: "<%= alertTitle %>",
 						text: "<%= alertMsg %>",
 						icon: "success",
 						confirmButtonText: "확인"
@@ -149,7 +150,7 @@
 		    		confirmButtonText: "로그아웃",
 		    		showCancelButton: true
 		    	}).then((result) => {
-		    		if(result.isConfirmed) location.href = "member/logout";
+		    		if(result.isConfirmed) location.href = "/member/logout";
 		    	});
 		    }
       </script>

@@ -30,7 +30,8 @@ public class MemberController {
 	 * [주입 방식]
 	 * 1) 필드 주입 방식 : 스프링 컨테이너가 객체를 생성한 후 @Autowired 가 붙은 필드에 의존성을 주입하는 방식
 	 * 		=> 간결하고 해당 필드에 대한 처리를 하지 않아도 됨(생성자, setter)
-	 * 		=> 테스트가 어려움(객체 생성 시 주입되는 것이 아닌 bean 에 생성된 후 주입받ㄴ는 방식으로 테스트 진행 시 임의의 객체를 생성하기 어려움
+	 * 		=> 테스트가 어려움(객체 생성 시 주입되는 것이 아닌 bean 에 생성된 후 주입받는 방식으로
+	 * 			테스트 진행 시 임의의 객체를 생성하기 어려움
 	 * 		=> 불변성 보장 문제(객체 생성 시 의존성이 주입되어 고정되지 않으므로 클래스 생성 이후 의존성이 변경될 수 있음)
 	 * 
 	 * 2) 생성자 주입 방식 : 스프링 컨테이너가 객체를 생성할 때 @Autowired가 붙은 생성자를 통해 필요한 의존성을 주입하는 방식(권장)
@@ -81,6 +82,7 @@ public class MemberController {
 			return "common/errorPage";
 		} else {
 			session.setAttribute("loginMember", loginMember);
+			session.setAttribute("alertTitle", "로그인");
 			session.setAttribute("alertMsg", "로그인 성공!");
 			return "redirect:/";
 		}
@@ -137,6 +139,7 @@ public class MemberController {
 		if(result > 0) {
 			session.removeAttribute("alertMsg");
 			// 회원 가입 성공
+			session.setAttribute("alertTitle", "회원가입");
 			session.setAttribute("alertMsg", "회원가입에 성공했습니다");
 			return "redirect:/";
 			
@@ -162,6 +165,7 @@ public class MemberController {
 		
 		if(updateMember != null) {
 			session.removeAttribute("loginMember");
+			session.setAttribute("alertTitle", "회원정보수정");
 			session.setAttribute("alertMsg", "회원정보를 수정했습니다");
 			session.setAttribute("loginMember", updateMember);
 			return "redirect:/";

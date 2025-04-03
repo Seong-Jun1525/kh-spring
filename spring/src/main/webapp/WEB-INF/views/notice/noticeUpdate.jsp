@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="com.kh.spring.member.model.vo.Member, com.kh.spring.notice.model.vo.Notice" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,6 +32,10 @@
 <body>
     <%-- header --%>
     <jsp:include page="../common/header.jsp" />
+    <%
+    	Member m = (Member) session.getAttribute("loginMember");
+    	Notice n = (Notice) request.getAttribute("notice");
+    %>
 
     <div class="outer">
         <br><br>
@@ -64,9 +69,11 @@
                 <br>
 
                 <div align="center">
-                    <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
-                    <button type="submit" class="btn btn-primary">수정</button>
-                    <button type="button" class="btn btn-danger" onclick="history.go(-1);">이전</button>
+	                <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
+		            <% if(m != null && m.getUserId().equals(n.getNoticeWriter())) { %>
+	                    <button type="submit" class="btn btn-primary">수정</button>
+	                    <button type="button" class="btn btn-danger" onclick="history.go(-1);">이전</button>
+	            	<% } %>
                 </div>
             </form>
         </div>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="com.kh.spring.member.model.vo.Member, com.kh.spring.notice.model.vo.Notice" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +31,10 @@
 <body>
 	<%-- header --%>
     <jsp:include page="../common/header.jsp" />
+    <%
+    	Member m = (Member) session.getAttribute("loginMember");
+    	Notice n = (Notice) request.getAttribute("notice");
+    %>
 
     <div class="outer">
         <br><br>
@@ -72,11 +77,11 @@
 
             <div align="center">
                 <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
-                <%--
-                <a href="updateNoticePage?noticeNo=<%= notice.getNoticeNo() %>&noticeTitle=<%= notice.getNoticeTitle() %>&noticeWriter=<%= notice.getNoticeWriter() %>&noticeContent=<%= notice.getNoticeContent() %>" class="btn btn-primary">수정</a>
-	            --%>
-	            <a href="updateNoticePage?noticeNo=${notice.noticeNo }" class="btn btn-primary">수정</a>
-	            <a href="" class="btn btn-danger">삭제</a>
+	            <% if(m != null && m.getUserId().equals(n.getNoticeWriter())) { %>
+		            <a href="updateNoticePage?noticeNo=${notice.noticeNo }" class="btn btn-primary">수정</a>
+		            <a href="deleteNotice?noticeNo=${notice.noticeNo}" class="btn btn-danger">삭제</a>
+            	<% } %>
+            
             </div>
         </div>
         <br><br>
@@ -84,6 +89,6 @@
     </div>
 
     <%-- footer --%>
-    <jsp:include page="../common/footer.jsp" /> 
+    <jsp:include page="../common/footer.jsp" />
 </body>
 </html>
