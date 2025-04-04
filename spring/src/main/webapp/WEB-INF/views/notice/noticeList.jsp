@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.kh.spring.notice.model.vo.Notice, com.kh.spring.member.model.vo.Member, java.util.ArrayList" %>
+<%@ page import="com.kh.spring.notice.model.vo.Notice, com.kh.spring.member.model.vo.Member, java.util.ArrayList, com.kh.spring.common.PageInfo" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,6 +42,7 @@
     
     <%
     	ArrayList<Notice> nList = (ArrayList<Notice>)request.getAttribute("nList");
+    	PageInfo pi = (PageInfo) request.getAttribute("pi");
     %>
 
     <div class="outer">
@@ -93,16 +94,35 @@
                 </tbody>
             </table>
             <br>
+            
+            <%
+            	int currPage = 0, startPage = 0, endPage = 0, maxPage = 0;
+            
+            	if(pi != null) {
+            		currPage = pi.getCurrPage();
+            		startPage = pi.getStartPage();
+            		endPage = pi.getEndPage();
+            		maxPage = pi.getMaxPage();
+            	}
+            %>
 
             <div id="pagingArea">
                 <ul class="pagination">
-                    <li class="page-item"><a href="" class="page-link">Prev</a></li>
-                    <li class="page-item"><a href="" class="page-link">1</a></li>
-                    <li class="page-item"><a href="" class="page-link">2</a></li>
-                    <li class="page-item"><a href="" class="page-link">3</a></li>
-                    <li class="page-item"><a href="" class="page-link">4</a></li>
-                    <li class="page-item"><a href="" class="page-link">5</a></li>
-                    <li class="page-item"><a href="" class="page-link">Next</a></li>
+                	<%-- 현재 페이지가 1일 때 비활성화 --%>
+                	<% if(currPage == 1) { %>
+                    	<li class="page-item disabled"><a class="page-link">Prev</a></li>
+                    <% } else { %>
+                    	<li class="page-item"><a href="list?cpage=<%= currPage - 1 %>" class="page-link">Prev</a></li>
+                    <% } %>
+                    <% for(int p = startPage; p <= endPage; p++) { %>
+                            <li class="page-item"><a href="list?cpage=<%= p %>" class="page-link"><%= p %></a></li>
+                    <% } %>
+                    <%-- 현재 페이지가 마지막 번호일 때 비활성화 --%>
+                	<% if(currPage == maxPage) { %>
+                    	<li class="page-item disabled"><a class="page-link">Next</a></li>
+                    <% } else { %>
+                    	<li class="page-item"><a href="list?cpage=<%= currPage + 1 %>" class="page-link">Next</a></li>
+                    <% } %>
                 </ul>
             </div>
 

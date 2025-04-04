@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.spring.common.PageInfo;
 import com.kh.spring.notice.model.dao.NoticeDAO;
 import com.kh.spring.notice.model.vo.Notice;
-
-import lombok.RequiredArgsConstructor;
 
 @Service // 빈 등록
 public class NoticeServiceImpl implements NoticeService {
@@ -21,9 +20,13 @@ public class NoticeServiceImpl implements NoticeService {
 		this.nDAO = nDAO;
 	}
 
+//	@Override
+//	public ArrayList<Notice> selectNoticeList() {
+//		return (ArrayList<Notice>) nDAO.selectNoticeList();
+//	}
 	@Override
-	public ArrayList<Notice> selectNoticeList() {
-		return (ArrayList<Notice>) nDAO.selectNoticeList();
+	public ArrayList<Notice> selectNoticeList(PageInfo pi) {
+		return (ArrayList<Notice>) nDAO.selectNoticeList(pi);
 	}
 
 	@Override
@@ -46,9 +49,26 @@ public class NoticeServiceImpl implements NoticeService {
 		return nDAO.deleteNotice(noticeNo);
 	}
 
+//	@Override
+//	public ArrayList<Notice> selectNoticeByNoticeTitle(String keyword) {
+//		return (ArrayList<Notice>) nDAO.selectNoticeByNoticeTitle(keyword);
+//	}
 	@Override
-	public ArrayList<Notice> selectNoticeByNoticeTitle(String keyword) {
-		return (ArrayList<Notice>) nDAO.selectNoticeByNoticeTitle(keyword);
+	public ArrayList<Notice> selectNoticeByNoticeTitle(String keyword, PageInfo pi) {
+		return (ArrayList<Notice>) nDAO.findbyNoticeTitleLike(keyword, pi);
+	}
+	
+	/**
+	 * 공지사항 검색 시 게시글 수
+	 */
+	@Override
+	public int selectByNoticeTitleCount(String keyword) {
+		return nDAO.selectByNoticeTitleCount(keyword);
+	}
+
+	@Override
+	public int selectNoticeCount() {
+		return nDAO.selectNoticeCount();
 	}
 
 }

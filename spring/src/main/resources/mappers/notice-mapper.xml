@@ -16,11 +16,37 @@
 		WHERE NOTICE_NO = #{ noticeNo }
 	</select>
 	
+	<!-- 
+		강사님 하고 한 검색 
+		기존 selectNoticeList 의 select문에 추가한 내용이지만 난 복붙해서 새로 만듬
+		
+		값이 하나이므로 keyword로 해도 noticeTitle로 해도 값이 전달됨
+		* 헷갈리므로 변수명으로 통일!!
+	-->
+	<select id="findbyNoticeTitleLike" resultType="Notice">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_WRITER, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+		FROM NOTICE
+		WHERE 1 = 1
+			<if test="keyword != null">
+				AND NOTICE_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
+		ORDER BY NOTICE_NO DESC
+	</select>
+	
+	<!-- 내가 한 검색 -->
 	<select id="selectNoticeByNoticeTitle" resultType="Notice">
 		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_WRITER, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
 		FROM NOTICE
 		WHERE NOTICE_TITLE LIKE '%' || #{noticeTitle} || '%'
 		ORDER BY NOTICE_NO DESC
+	</select>
+	
+	<select id="selectNoticeCount" resultType="_int">
+		SELECT COUNT(*) FROM NOTICE
+		WHERE 1=1
+			<if test="keyword != null">
+				AND NOTICE_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
 	</select>
 	
 	<insert id="insertNotice">

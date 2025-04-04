@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.spring.common.PageInfo;
 import com.kh.spring.notice.model.vo.Notice;
 import com.kh.spring.notice.service.NoticeService;
 
@@ -42,9 +43,26 @@ public class NoticeController {
 
 	// 공지사항 목록 페이지 연결
 	@GetMapping("/list") // 주소 시험 나옴!
-	public ModelAndView noticeList(ModelAndView mv) {
+	public ModelAndView noticeList(@RequestParam(value = "cpage", defaultValue="1") int currPage, ModelAndView mv) {
+		/**
+		 *  페이징 처리를 위한 추가 작업
+		 *  [1] 전체 게시글 수 조회
+		 *  
+		 *  [2] 현재 페이지 번호 --> URL 요청 시 전달되어야 하는 값
+		 *  
+		 *  [3] 페이징 바 개수, 한 페이지 당 표시할 게시글 개수 --> 지정
+		 *
+		 */
+		int listCount = nService.selectNoticeCount();
+		int pageLimit = 10;
+		int boardLimit = 10;
 		
-		ArrayList<Notice> nList = nService.selectNoticeList();
+		PageInfo pi = new PageInfo(listCount, currPage, pageLimit, boardLimit);
+		
+		// 페이징바 정보를 request 영역에 저장 --> 페이징 바 표시할 때 사용할 것임
+		mv.addObject("pi", pi);
+		
+		ArrayList<Notice> nList = nService.selectNoticeList(pi);
 		
 		System.out.println(nList);
 		
@@ -146,15 +164,35 @@ public class NoticeController {
 	}
 	
 	// 공지사항 검색 요청
+//	@GetMapping("/search")
+//	public ModelAndView searchNotice(@RequestParam String keyword, ModelAndView mv) {
+//		// System.out.println(keyword);
+//		
+//		ArrayList<Notice> nSearchList = nService.selectNoticeByNoticeTitle(keyword);
+//		
+//		mv.addObject("nList", nSearchList);
+//		mv.setViewName("notice/noticeList");
+//
+//		return mv;
+//	}
+	
+	// 강사님이랑 진행한 검색 요청!!
 	@GetMapping("/search")
-	public ModelAndView searchNotice(@RequestParam String keyword, ModelAndView mv) {
-		// System.out.println(keyword);
+	public String searchNoticeByTitle(@RequestParam (defaultValue="1") int currPage, String keyword, Model model) {
+		// 조회된 목록 request 영역에 list 키 값으로 저장
+		int listCount = nService.selectByNoticeTitleCount(keyword); // 전체 기준이 아닌 검색된 목록 수 기준
+		int pageLimit = 10;
+		int boardLimit = 10;
 		
-		ArrayList<Notice> nSearchList = nService.selectNoticeByNoticeTitle(keyword);
+		PageInfo pi = new PageInfo(listCount, currPage, pageLimit, boardLimit);
 		
-		mv.addObject("nList", nSearchList);
-		mv.setViewName("notice/noticeList");
-
-		return mv;
+		// 페이징 바 표시를 위해 request 영역에 pi값을 pageInfo 저장
+		ArrayList<Notice> list = nService.selectNoticeByNoticeTitle(keyword, pi);
+//		System.out.println(list.size());
+		
+		model.addAttribute("nList", list);
+		model.addAttribute("pi", pi);
+		
+		return "notice/noticeList";
 	}
 }
