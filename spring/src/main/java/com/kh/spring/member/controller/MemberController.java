@@ -179,4 +179,37 @@ public class MemberController {
 			return "common/errorPage";
 		}
 	}
+	
+	/**
+	 * 회원 탈퇴 요청
+	 */
+	@PostMapping("/delete")
+	public String deleteMember(String userPwd, HttpSession session, Model model) {
+		// 입력된 비밀번호가 일치하는 지 확인
+		// * 전달받은 데이터(password) : 평문
+		// * 세션 영역에 저장된 데이터 : 암호문
+		Member loginMember = (Member)session.getAttribute("loginMember");
+		
+		if (bcpe.matches(userPwd, loginMember.getUserPwd())) {
+			// 비밀번호가 일치하는 경우 삭제 요청
+			int result = mService.deleteMember(loginMember.getUserId());
+			if (result > 0) {
+				// 탈퇴 성공 시
+				//			세션 영역에서 사용자 정보 제거
+				session.removeAttribute("loginMember");
+				//			"회원 탈퇴에 성공했습니다. 그동안 감사합니다." 메시지 저장
+				session.setAttribute("alertTitle", "회원 탈퇴");
+				session.setAttribute("alertIcon", "success");
+				session.setAttribute("alertMsg", "회원 탈퇴에 성공했습니다. 그동안 감사합니다.");
+				//			메인 페이지로 url 재요청
+				return "redirect:/";
+			} 
+		}
+		
+		// 탈퇴 실패 시 
+		//			"회원 탈퇴에 실패했습니다." 메시지 저장
+		model.addAttribute("errorMsg", "회원 탈퇴에 실패했습니다.");		
+		//			에러페이지로 응답
+		return "common/errorPage";
+	}
 }

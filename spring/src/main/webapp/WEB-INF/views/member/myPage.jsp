@@ -84,7 +84,7 @@
               <h1 class="modal-title fs-5">회원탈퇴</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form>
+            <form action="delete" method="post">
                 <div class="modal-body" >
                     <div align="center">
                         <b>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="userPwd" class="col-form-label">비밀번호</label>
-                        <input type="password" class="form-control" placeholder="Enter Password.." id="userPwd" />
+                        <input type="password" class="form-control" placeholder="Enter Password.." name="userPwd" id="userPwd" />
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -16,7 +16,10 @@ public class MemberServiceImpl implements MemberService {
 	
 	private final MemberDAO mDAO;
 	
-	/* lombok을 쓰지 않을 경우 생성자 주입 방식
+	/* 
+	 * @RequiredArgsConstructor을 사용할 경우 아래 생성자 주입 방식 코드 생략 가능
+	 * 
+	 * lombok을 쓰지 않을 경우 생성자 주입 방식
 	 	@Autowired
 		public MemberServiceImpl(MemberDAO mDAO) {
 			this.mDAO = mDAO;
@@ -45,8 +48,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public int deleteMember(String userId) {
-		// TODO Auto-generated method stub
-		return 0;
+		return mDAO.deleteMember(userId);
 	}
 
 }

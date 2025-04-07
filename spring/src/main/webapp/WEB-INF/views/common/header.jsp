@@ -1,4 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %> 
+<%--
+	회원 객체를 필요로 하므로 import를 해야함
+	클래스를 import 하기위해 page 지시어와 함께 import에 추가할 클래스의 경로를 작성한다
+--%>
 <%@ page import="com.kh.spring.member.model.vo.Member"  %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -22,6 +26,9 @@
 </head>
 <body>
 	<%
+		// 스크립트릿 태그 내부
+		// 세션에 저장된 값들을 getAttribute("키값") 으로 가져와서 변수에 저장한다
+		// 이때 반환 값은 Object이므로 다운캐스팅을 해줘야 한다
 		String alertTitle = (String) session.getAttribute("alertTitle");
 		String alertMsg = (String) session.getAttribute("alertMsg");
 		String alertIcon = (String) session.getAttribute("alertIcon");
