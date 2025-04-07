@@ -112,25 +112,31 @@
                 	<% if(currPage == 1) { %>
                     	<li class="page-item disabled"><a class="page-link">Prev</a></li>
                     <% } else { %>
-                    	<li class="page-item"><a href="list?cpage=<%= currPage - 1 %>" class="page-link">Prev</a></li>
+                    	<li class="page-item">
+                    		<a data-curr="<%= currPage - 1 %>" class="page-link">Prev</a>
+                    	</li>
                     <% } %>
                     <% for(int p = startPage; p <= endPage; p++) { %>
-                            <li class="page-item"><a href="list?cpage=<%= p %>" class="page-link"><%= p %></a></li>
+                            <li class="page-item <% if (currPage == p) { %>active<% } %>">
+                            	<%-- <a href="list?cpage=<%= p %>" class="page-link"><%= p %></a> --%>
+                            	<a class="page-link" data-curr="<%= p %>"><%= p %></a>
+                            </li>
                     <% } %>
                     <%-- 현재 페이지가 마지막 번호일 때 비활성화 --%>
                 	<% if(currPage == maxPage) { %>
                     	<li class="page-item disabled"><a class="page-link">Next</a></li>
                     <% } else { %>
-                    	<li class="page-item"><a href="list?cpage=<%= currPage + 1 %>" class="page-link">Next</a></li>
+                    	<li class="page-item"><a data-curr="<%= currPage + 1 %>" class="page-link">Next</a></li>
                     <% } %>
                 </ul>
             </div>
 
             <br clear="both">
 
-            <form action="search" id="searchForm">
+            <%-- <form action="search" id="searchForm"> --%>
+            <form action="/notice/list" id="searchForm">
                 <div class="text">
-                    <input type="text" class="form-control" name="keyword" placeholder="검색할 제목을 입력하세요.">
+                    <input type="text" class="form-control" name="keyword" value="${ keyword }" placeholder="검색할 제목을 입력하세요.">
                 </div>
                 <button class="searchBtn btn btn-secondary">검색</button>
             </form>
@@ -140,6 +146,8 @@
     
     <script>
     	window.addEventListener("load", function() {
+    		
+    		// 공지사항 목록 클릭 시 상세 페이지 이동
     		const noticeTrArr = document.querySelectorAll("#noticeList tbody tr");
     		
     		for(const ele of noticeTrArr) {
@@ -147,6 +155,25 @@
 	    			// console.log("get!");
 	    			location.href = "/notice/noticeDetail?noticeNo=" + ele.children[0].innerText;
 	    		}
+    		}
+    		
+    		// 페이징 바 클릭 시 해당 페이지로 이동
+    		const pagingArr = document.querySelectorAll("#pagingArea a");
+    		console.log(pagingArr);
+    		
+    		for(let ele of pagingArr) {
+    			ele.onclick = function() {
+    				let keyword = "${keyword}";
+    				
+    				// let requestUrl = "/notice/list?cpage=" + ele.innerText;
+    				let requestUrl = "/notice/list?cpage=" + ele.getAttribute("data-curr");
+    				
+    				if(keyword !== "") {
+    					requestUrl += "&keyword=" + keyword;
+    				}
+    				
+    				ele.href = requestUrl;
+    			}
     		}
     	});
     </script>

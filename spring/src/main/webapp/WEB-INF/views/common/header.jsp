@@ -24,6 +24,7 @@
 	<%
 		String alertTitle = (String) session.getAttribute("alertTitle");
 		String alertMsg = (String) session.getAttribute("alertMsg");
+		String alertIcon = (String) session.getAttribute("alertIcon");
 		Member loginMember = (Member) session.getAttribute("loginMember");
 	%>
     <div id="top-area">
@@ -84,12 +85,12 @@
           </div>
         </div>
 	</div>
-      <script>
+    <script>
 			<% if(alertMsg != null) { %>
 					Swal.fire({
 						title: "<%= alertTitle %>",
 						text: "<%= alertMsg %>",
-						icon: "success",
+						icon: "<%= alertIcon %>",
 						confirmButtonText: "확인"
 					});
 			<% 
@@ -109,7 +110,7 @@
 		    const removeActiveClass = (list) => {
 		        list.forEach((menu)=>{
 		            menu.classList.remove("active");
-		        })
+		        });
 		    }
 		    const addMenuClickEvent = (list) => {
 		    	list.forEach((menu)=>{              

@@ -84,6 +84,7 @@ public class MemberController {
 			session.setAttribute("loginMember", loginMember);
 			session.setAttribute("alertTitle", "로그인");
 			session.setAttribute("alertMsg", "로그인 성공!");
+			session.setAttribute("alertIcon", "success");
 			return "redirect:/";
 		}
 		
@@ -141,6 +142,7 @@ public class MemberController {
 			// 회원 가입 성공
 			session.setAttribute("alertTitle", "회원가입");
 			session.setAttribute("alertMsg", "회원가입에 성공했습니다");
+			session.setAttribute("alertIcon", "success");
 			return "redirect:/";
 			
 		} else {
@@ -167,6 +169,7 @@ public class MemberController {
 			session.removeAttribute("loginMember");
 			session.setAttribute("alertTitle", "회원정보수정");
 			session.setAttribute("alertMsg", "회원정보를 수정했습니다");
+			session.setAttribute("alertIcon", "success");
 			session.setAttribute("loginMember", updateMember);
 			return "redirect:/";
 		} else {

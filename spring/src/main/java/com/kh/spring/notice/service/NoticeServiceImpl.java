@@ -13,6 +13,7 @@ import com.kh.spring.notice.model.vo.Notice;
 public class NoticeServiceImpl implements NoticeService {
 	
 	// 생성자 주입 방식으로 DI 처리
+	// lombok을 사용할 경우 @NoRequiredConstrutor 어노테이션 사용
 	private final NoticeDAO nDAO;
 	
 	@Autowired

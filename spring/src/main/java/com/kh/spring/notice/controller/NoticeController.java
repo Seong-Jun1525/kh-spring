@@ -43,7 +43,7 @@ public class NoticeController {
 
 	// 공지사항 목록 페이지 연결
 	@GetMapping("/list") // 주소 시험 나옴!
-	public ModelAndView noticeList(@RequestParam(value = "cpage", defaultValue="1") int currPage, ModelAndView mv) {
+	public ModelAndView noticeList(String keyword, @RequestParam(value = "cpage", defaultValue="1") int currPage, ModelAndView mv) {
 		/**
 		 *  페이징 처리를 위한 추가 작업
 		 *  [1] 전체 게시글 수 조회
@@ -53,7 +53,11 @@ public class NoticeController {
 		 *  [3] 페이징 바 개수, 한 페이지 당 표시할 게시글 개수 --> 지정
 		 *
 		 */
-		int listCount = nService.selectNoticeCount();
+//		int listCount = nService.selectNoticeCount(); // 기존 전체 공지사항 수를 조회하는 것
+		int listCount = nService.selectByNoticeTitleCount(keyword);
+		// => keyword 값이 null 일 경우(null일 경우 전달되지 않음), 전체 게시글 수를 카운트함
+		
+		// 보여줄 최대 행수와 페이지 수
 		int pageLimit = 10;
 		int boardLimit = 10;
 		
@@ -62,15 +66,23 @@ public class NoticeController {
 		// 페이징바 정보를 request 영역에 저장 --> 페이징 바 표시할 때 사용할 것임
 		mv.addObject("pi", pi);
 		
-		ArrayList<Notice> nList = nService.selectNoticeList(pi);
+//		ArrayList<Notice> nList = nService.selectNoticeList(pi);
+		ArrayList<Notice> nList = nService.selectNoticeByNoticeTitle(keyword, pi);
 		
-		System.out.println(nList);
+//		System.out.println(nList);
 		
 		// ModelAndView : 스프링에서 제공해주는 객체
 		// - Model : 데이터를 key-value 형태로 저장할 수 있는 공간(단독 사용)
 		// - View : 응답 페이지에 대한 정보를 저장할 수 있는 공간 ( 단독 사용 불가 => ModelAndView )
 		
 		mv.addObject("nList", nList);
+		
+		// 검색 키워드 저장
+		// 저장하지 않을 시 페이지 번호를 누르거나 했을 때 keyword가 초기화되서 문제가 발생한다
+		
+		// key 값을 빼먹지 말고 작성하자!!
+		mv.addObject("keyword", keyword); // null 값일 경우 그냥 빈 값으로 체크되므로 null체크할 필요는 없다
+		
 		mv.setViewName("notice/noticeList");
 
 		return mv;
@@ -108,6 +120,7 @@ public class NoticeController {
 		if(result > 0) {
 			session.setAttribute("alertTitle", "공지사항 작성");
 			session.setAttribute("alertMsg", "공지사항 작성에 성공했습니다!");
+			session.setAttribute("alertIcon", "success");
 			return "redirect:/";
 		} else {
 			model.addAttribute("errorMsg", "공지사항 작성에 실패했습니다.");
@@ -139,6 +152,7 @@ public class NoticeController {
 		if(result > 0) {
 			session.setAttribute("alertTitle", "공지사항 수정");
 			session.setAttribute("alertMsg", "공지사항 수정에 성공했습니다!");
+			session.setAttribute("alertIcon", "success");
 			return "redirect:/notice/noticeDetail?noticeNo=" + noticeNo;
 		} else {
 			model.addAttribute("errorMsg", "공지사항 수정에 실패했습니다.");
@@ -156,6 +170,7 @@ public class NoticeController {
 		if(result > 0) {
 			session.setAttribute("alertTitle", "공지사항 삭제");
 			session.setAttribute("alertMsg", "공지사항 삭제에 성공했습니다!");
+			session.setAttribute("alertIcon", "success");
 			return "redirect:/notice/list";
 		} else {
 			model.addAttribute("errorMsg", "공지사항 삭제에 실패했습니다.");

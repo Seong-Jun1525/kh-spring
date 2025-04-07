@@ -24,6 +24,9 @@ public interface NoticeService {
 
 	/**
 	 * 공지사항 검색 시 게시글 수
+	 * 
+	 * 동적 sql을 사용하여 keyword가 있을 경우 null로 실행이 되지 않으므로 전체 게시글이 조회되고
+	 * 있을 경우 조건에 따라 조회되므로 매개변수가 있는 검색 메서드를 사용해야함
 	 */
 	int selectByNoticeTitleCount(String keyword);
 }
