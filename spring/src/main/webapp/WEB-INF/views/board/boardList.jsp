@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.kh.spring.board.model.vo.Board, java.util.ArrayList" %>
+<%@ page import="com.kh.spring.board.model.vo.Board, java.util.ArrayList, com.kh.spring.common.PageInfo" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -40,6 +40,7 @@
 <body>
 	<%
 		ArrayList<Board> bList = (ArrayList<Board>)request.getAttribute("bList");
+		PageInfo pi = (PageInfo) request.getAttribute("pi");
 	%>
     <%-- header --%>
     <jsp:include page="../common/header.jsp" />
@@ -91,22 +92,50 @@
                 </tbody>
             </table>
             <br>
+            
+            <%
+            	int currPage = 0, startPage = 0, endPage = 0, maxPage = 0;
+            
+            	if(pi != null) {
+            		currPage = pi.getCurrPage();
+            		startPage = pi.getStartPage();
+            		endPage = pi.getEndPage();
+            		maxPage = pi.getMaxPage();
+            	}
+            %>
 
             <div id="pagingArea">
                 <ul class="pagination">
-                    <li class="page-item"><a href="" class="page-link">Prev</a></li>
-                    <li class="page-item"><a href="" class="page-link">1</a></li>
-                    <li class="page-item"><a href="" class="page-link">2</a></li>
-                    <li class="page-item"><a href="" class="page-link">3</a></li>
-                    <li class="page-item"><a href="" class="page-link">4</a></li>
-                    <li class="page-item"><a href="" class="page-link">5</a></li>
-                    <li class="page-item"><a href="" class="page-link">Next</a></li>
+                <% if(currPage == 1) { %>
+                		<li class="page-item disabled"><a class="page-link">Prev</a></li>
+                <% } else {%>
+                		<%--
+                		 <li class="page-item"><a href="/board/list?cpage=<%= currPage - 1 %>&condition=${condition}&keyword=${keyword}" class="page-link">Prev</a></li>
+                		--%>
+                		<li class="page-item"><a data-current="<%= currPage - 1 %>" class="page-link">Prev</a></li>
+                		<% } %>
+                <% for(int idx = startPage; idx <= endPage; idx++) { %>
+                		<%--
+                		 <li class="page-item"><a href="/board/list?cpage=<%= idx %>&condition=${condition}&keyword=${keyword}" class="page-link <% if (currPage == idx) { %>active<% } %>"><%= idx %></a></li>
+                		--%>
+                		<li class="page-item">
+                			<a data-current="<%= idx %>" class="page-link <% if (currPage == idx) { %>active<% } %>"><%= idx %></a>
+                		</li>
+                		<% } %>
+                <% if(currPage == maxPage) { %>
+                    	<li class="page-item disabled"><a class="page-link">Next</a></li>
+                <% } else { %>
+                    	<%-- 
+                    	<li class="page-item"><a href="/board/list?cpage=<%= currPage + 1 %>&condition=${condition}&keyword=${keyword}" class="page-link">Next</a></li>
+                    	 --%>
+          	            <li class="page-item"><a data-current="<%= currPage + 1 %>" class="page-link">Next</a></li>
+                <% } %>
                 </ul>
             </div>
 
             <br clear="both">
 
-            <form action="" id="searchForm">
+            <form action="/board/list" id="searchForm">
                 <div class="select">
                     <select name="condition" id="" class="custom-select form-select">
                         <option value="writer">작성자</option>
@@ -115,7 +144,7 @@
                     </select>
                 </div>
                 <div class="text">
-                    <input type="text" class="form-control" name="keyword">
+                    <input type="text" class="form-control" value="${ keyword }" name="keyword">
                 </div>
                 <button class="searchBtn btn btn-secondary">검색</button>
             </form>
@@ -125,5 +154,48 @@
 
     <%-- footer --%>
     <jsp:include page="../common/footer.jsp" /> 
+    
+    <script>
+    	/*
+    	onload = 함수
+    	이렇게 하면 마지막 onload만 실행되는 문제가 발생됨
+    	*/
+    	window.addEventListener("load", () => {
+    		/* 검색 조건 초기화 */
+    		const condition = "${condition}";
+    		// console.log(condition);
+    		
+    		if(condition !== "") {
+    			const optionList = document.querySelectorAll("#searchForm select[name=condition] option");
+    		
+    			for(const ele of optionList) {
+    				// console.log(ele.value);
+    				if(condition === ele.value) {
+    					ele.setAttribute("selected", true);
+    					break;
+    				}
+    			}
+    		}
+    		
+    		const linkList = document.querySelectorAll("#pagingArea a[data-current]"); // 비활성화된 요소도 선택되므로 [data-current] 추가
+    		// console.log(linkList);
+    		
+    		for(let l of linkList) {
+    			l.addEventListener("click", () => {
+    				// console.log("click!");
+    				
+    				let keyword = "${keyword}";
+    				
+    				let requestUrl = "/board/list?cpage=" + l.getAttribute("data-current");
+    				
+    				if(keyword !== "") {
+    					requestUrl += "&condition=" + document.querySelector("select[name=condition]").value + "&keyword=" + keyword;
+    				}
+    				
+    				l.href = requestUrl;
+    			});
+    		}
+    	});
+    </script>
 </body>
 </html>

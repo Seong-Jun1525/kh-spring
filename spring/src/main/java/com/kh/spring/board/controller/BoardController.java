@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.spring.board.model.dto.SearchDTO;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.service.BoardService;
 import com.kh.spring.common.PageInfo;
@@ -30,10 +31,18 @@ public class BoardController {
 //	그래서 Service 클래스에 @Service 을 사용하여 빈 등록을 해야한다
 	
 	@GetMapping("/list")
-	public ModelAndView boardList(@RequestParam(value="cpage", defaultValue="1") int currPage, ModelAndView mv) {
+	public ModelAndView boardList(
+						SearchDTO searchDTO,
+						@RequestParam(value="cpage", defaultValue="1") int currPage, 
+						ModelAndView mv) {
+		// 검색
+//		System.out.println("검색 조건 : " + searchDTO.getCondition());
+//		System.out.println("keyword : " + searchDTO.getKeyword());
+		
 		// 전체 게시글 수 조회
-		int listCount = bService.selectBoardCount();
-		System.out.println(listCount);
+//		int listCount = bService.selectBoardCount();
+		int listCount = bService.selectBoardCount(searchDTO);
+//		System.out.println(listCount);
 		
 		// 보여줄 행 수와 페이지 수
 		int pageLimit = 5;
@@ -41,12 +50,14 @@ public class BoardController {
 		
 		PageInfo pi = new PageInfo(listCount, currPage, pageLimit, boardLimit);
 		
-		ArrayList<Board> bList = bService.selectBoardList(pi);
+		ArrayList<Board> bList = bService.selectBoardList(pi, searchDTO);
 		
 //		for(Board b : bList) System.out.println(b);
 		
 		mv.addObject("pi", pi);
 		mv.addObject("bList", bList);
+		mv.addObject("condition", searchDTO.getCondition());
+		mv.addObject("keyword", searchDTO.getKeyword());
 		mv.setViewName("board/boardList");
 		
 		return mv;

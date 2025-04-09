@@ -21,5 +21,37 @@
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE STATUS = 'Y'
+			<if test='condition == "writer"'>
+				AND BOARD_WRITER LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test='condition == "title"'>
+				AND BOARD_TITLE LIKE '%${keyword}%'
+			</if>
+			<if test='condition == "content"'>
+				AND BOARD_CONTENT LIKE '%${keyword}%'
+			</if>
+	</select>
+	
+	<select id="findBoardListLike" resultType="Board">
+		SELECT 
+			BOARD_NO, 
+			BOARD_TITLE, 
+			BOARD_WRITER,
+			BOARD_CONTENT,
+			COUNT, 
+			TO_CHAR(CREATE_DATE, 'RRRR-MM-DD') AS CREATE_DATE,
+			ORIGIN_NAME
+		FROM BOARD
+		WHERE STATUS = 'Y'
+			<if test='condition == "writer"'>
+				AND BOARD_WRITER LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test='condition == "title"'>
+				AND BOARD_TITLE LIKE '%${keyword}%'
+			</if>
+			<if test='condition == "content"'>
+				AND BOARD_CONTENT LIKE '%${keyword}%'
+			</if>
+		ORDER BY BOARD_NO DESC
 	</select>
 </mapper>

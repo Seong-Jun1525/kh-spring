@@ -2,10 +2,12 @@ package com.kh.spring.board.service;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.spring.board.model.dao.BoardDAO;
+import com.kh.spring.board.model.dto.SearchDTO;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.Reply;
 import com.kh.spring.common.PageInfo;
@@ -36,7 +38,10 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public ArrayList<Board> selectBoardList(PageInfo pi) {
-		return (ArrayList<Board>)bDAO.selectBoardList(pi);
+		int offset = (pi.getCurrPage() - 1) * pi.getBoardLimit();
+		RowBounds rb = new RowBounds(offset, pi.getBoardLimit());
+		
+		return bDAO.selectBoardList(rb);
 	}
 
 	@Override
@@ -79,6 +84,26 @@ public class BoardServiceImpl implements BoardService {
 	public int increaseCount(int boardNo) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	/* 검색 조건에 따른 목록 조회 */
+	@Override
+	public ArrayList<Board> selectBoardListLike(PageInfo pi, String condition, String keyword) {
+		int offset = (pi.getCurrPage() - 1) * pi.getBoardLimit();
+		RowBounds rb = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.findBoardListLike(condition, keyword, rb);
+	}
+
+	@Override
+	public int selectBoardCount(SearchDTO searchDTO) {
+		return bDAO.selectBoardCount(searchDTO);
+	}
+
+	@Override
+	public ArrayList<Board> selectBoardList(PageInfo pi, SearchDTO searchDTO) {
+		int offset = (pi.getCurrPage() - 1) * pi.getBoardLimit();
+		RowBounds rb = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.findBoardListLike(rb, searchDTO);
 	}
 
 }
