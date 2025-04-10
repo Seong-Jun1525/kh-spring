@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="com.kh.spring.board.model.vo.Board, java.util.ArrayList, com.kh.spring.common.PageInfo" %>
+<%@ page import="com.kh.spring.board.model.vo.Board, java.util.ArrayList, com.kh.spring.common.PageInfo, com.kh.spring.member.model.vo.Member" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -43,7 +43,14 @@
 		PageInfo pi = (PageInfo) request.getAttribute("pi");
 	%>
     <%-- header --%>
-    <jsp:include page="../common/header.jsp" />
+    <%-- <jsp:include page="../common/header.jsp" /> --%>
+    <%@ include file="../common/header.jsp" %>
+    
+    <%--
+    	header.jsp 안에 이미 로그인 정보가 있으므로 
+    	액션태그가 아닌 include 지시어를 사용하면
+    	header.jsp안에 선언한 변수를 사용 가능하다
+     --%>
 
     <div class="outer">
         <br><br>
@@ -52,7 +59,9 @@
             <br>
 
             <%-- 로그인 시에만 글쓰기 버튼 표시 --%>
-            <a href="" class="btn btn-secondary" style="float:right">글쓰기</a>
+            <% if(loginMember != null) { %>
+            	<a href="/board/enrollForm" class="btn btn-secondary" style="float:right">글쓰기</a>
+            <% } %>
             <br>
             
             <br>
@@ -80,8 +89,6 @@
 		                        <td>
 		                        	<% if(b.getOriginName() != null ) { %>
 		                        		■
-		                        	<% } else { %>
-		                        		X
 		                        	<% } %>
 		                        </td>
 		                    </tr>
@@ -161,6 +168,17 @@
     	이렇게 하면 마지막 onload만 실행되는 문제가 발생됨
     	*/
     	window.addEventListener("load", () => {
+    		/* 자유게시판 상세페이지 이동 */
+    		const boardList = document.querySelectorAll("#boardList tbody tr");
+    		
+    		console.log(boardList);
+    		
+    		for(let boardItem of boardList) {
+    			boardItem.addEventListener("click", () => {
+    				location.href = "/board/detail?boardNo=" + boardItem.children[0].innerText;
+    			});
+    		}
+    		
     		/* 검색 조건 초기화 */
     		const condition = "${condition}";
     		// console.log(condition);

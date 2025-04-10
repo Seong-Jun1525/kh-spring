@@ -29,7 +29,7 @@
 </head>
 <body>
     <%-- header --%>
-    <jsp:include page="../common/header.jsp" />
+    <%@ include file="../common/header.jsp" %>
 
     <div class="outer">
         <br><br>
@@ -37,25 +37,29 @@
             <h2>게시글 작성하기</h2>
             <br>
 
-            <form action="" enctype="" id="enrollForm" method="post">
+			<%-- 
+				multipart/form-data로 enctype을 설정해줘야지 파일을 받을 수 있다
+			--%>
+            <form action="/board/write" enctype="multipart/form-data" id="enrollForm" method="post">
 
                 <table align="center" class="table">
                     <tr>
                         <th>제목</th>
                         <td>
-                            <input type="text" name="" id="title" class="form-control" required>
+                            <input type="text" name="boardTitle" id="title" class="form-control" required>
                         </td>
                     </tr>
                     <tr>
                         <th>작성자</th>
                         <td>
-                            <input type="text" name="" id="writer" value="user01" class="form-control" readonly>
+                            <input type="text" name="boardWriter" id="writer" value="${loginMember.userId }" class="form-control" readonly>
                         </td>
                     </tr>
                     <tr>
                         <th>첨부파일</th>
                         <td>
-                            <input type="file" name="" id="upfile" class="form-control">
+                        	<%-- 첨부파일은 별도로 받아줘야 한다 --%>
+                            <input type="file" name="upfile" id="upfile" class="form-control">
                         </td>
                     </tr>
                     <tr>
@@ -63,7 +67,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <textarea name="" id="content" cols="30" rows="10" class="form-control" style="resize: none;" required></textarea>
+                            <textarea name="boardContent" id="content" cols="30" rows="10" class="form-control" style="resize: none;" required></textarea>
                         </td>
                     </tr>
                 </table>

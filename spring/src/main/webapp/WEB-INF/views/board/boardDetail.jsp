@@ -36,30 +36,31 @@
         <div class="inner-area">
             <h2>게시글 상세보기</h2>
             <br>
-            <a href="" class="btn btn-secondary" style="float:right;">목록보기</a>
+            <a href="/board/list" class="btn btn-secondary" style="float:right;">목록보기</a>
             <br><br>
 
             <table align="center" class="table">
                 <tr>
                     <th width="100">제목</th>
                     <td colspan="3">
-                        게시판제목@@
+                        ${ board.boardTitle }
                     </td>
                 </tr>
                 <tr>
                     <th>작성자</th>
                     <td>
-                        user01@@
+                        ${ board.boardWriter }
                     </td>
                     <th>작성일</th>
                     <td>
-                        2024-04-01@@
+                        ${ board.createDate }
                     </td>
                 </tr>
                 <tr>
                     <th>첨부파일</th>
                     <td colspan="3">
-                        파일이름.png
+                        <%--${ board.originName } --%>
+                        <img src="${ image }">
                     </td>
                 </tr>
                 <tr>
@@ -69,7 +70,7 @@
                 <tr>
                     <td colspan="4">
                         <p style="height:150px;">
-                            내용입니당@@@@@
+							${ board.boardContent }
                         </p>
                     </td>
                 </tr>

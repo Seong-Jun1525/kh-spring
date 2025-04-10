@@ -3,16 +3,21 @@ package com.kh.spring.board.controller;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.spring.board.model.dto.SearchDTO;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.service.BoardService;
+import com.kh.spring.common.MyFileUtils;
 import com.kh.spring.common.PageInfo;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -59,6 +64,79 @@ public class BoardController {
 		mv.addObject("condition", searchDTO.getCondition());
 		mv.addObject("keyword", searchDTO.getKeyword());
 		mv.setViewName("board/boardList");
+		
+		return mv;
+	}
+	
+	@GetMapping("/enrollForm")
+	public String enrollFormPage() {
+		return "board/boardEnrollForm";
+	}
+	
+	@PostMapping("/write")
+	/**
+	 * 
+	 * @param board : Board의 필드명과 name 속성의 값이 동일해야
+	 * 					스프링에서 해당 객체로 받을 수 있도록
+	 * 					처리해준다
+	 * @param upfile : Spring Boot Start Web 패키지에 포함된 것!
+	 * 					서블릿으로 할 경우 commons-io, commons-fileupload 라이브러리
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	public String boardWrite(Board board, MultipartFile upfile, HttpSession session, Model model) {
+//		System.out.println(board);
+		System.out.println("upfile: " + upfile.isEmpty());
+		
+		/**
+		 * 파일은 경로를 디비에 저장하고 파일은 서버가 가지고 있는다!
+		 * => 디비는 데이터를 저장하는 역할인데 쓸데없이 큰 파일을 저장할 필요가 없기 때문이다
+		 * 
+		 * 
+		 * 원본이름은 사용자가 화면상에서 파일명을 보기위해
+		 * 변경이름은 서버에 저장할 파일명
+		 */
+		
+		// 첨부파일이 있는 경우 파일에 대한 처리
+		if(!upfile.isEmpty()) {
+			// 파일명 변경 -> "spring_" + 현재날짜 + 랜덤값 + 확장자
+			String changeName = MyFileUtils.saveFile(upfile, session, "/resources/upfile/");
+			
+			// Board 객체에 파일 관련된 필드 => originName, changeName
+			board.setOriginName(upfile.getOriginalFilename()); // 파일 원본명 저장
+			board.setChangeName(changeName);
+		}
+		
+		int result = bService.insertBoard(board);
+//		System.out.println(result);
+		
+		if(result > 0) {
+			session.setAttribute("alertTitle", "글 등록");
+			session.setAttribute("alertIcon", "success");
+			session.setAttribute("alertMsg", "글 등록에 성공했습니다!");
+			return "redirect:/board/list";
+		} else {
+			model.addAttribute("errorMsg", "글 등록에 실패했습니다.");
+			return "common/errorPage";
+		}
+	}
+	
+	@GetMapping("detail")
+	public ModelAndView boardDetail(int boardNo, ModelAndView mv) {
+		System.out.println(boardNo);
+		
+		Board board = bService.selectBoardDetail(boardNo);
+		
+		System.out.println(board.getChangeName());
+		// 이렇게 경로를 붙여주거나 아예 DB에 경로를 붙여서 저장하거나 둘 중 한 선택!
+		String image = "/resources/upfile/" + board.getChangeName();
+		
+		if(board != null) {
+			mv.addObject("board", board);
+			mv.addObject("image", image);
+			mv.setViewName("board/boardDetail");
+		}
 		
 		return mv;
 	}
