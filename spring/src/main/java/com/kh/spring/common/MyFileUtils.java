@@ -53,6 +53,6 @@ public class MyFileUtils {
 			e.printStackTrace();
 		}
 		
-		return changeName;
+		return path + changeName; // 화면에 표시할 때 경로가 포함되어 있는 형태로 사용하기 위해 저장 경로 추가
 	}
 }

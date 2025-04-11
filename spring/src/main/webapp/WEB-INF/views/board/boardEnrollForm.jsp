@@ -73,7 +73,7 @@
                 </table>
                 <div class="btns" align="center">
                     <button type="submit" class="btn btn-primary">등록하기</button>
-                    <button type="button" class="btn btn-danger">취소하기</button>
+                    <button type="button" class="btn btn-danger" onclick="history.go(-1);">취소하기</button>
                 </div>
             </form>
         </div>

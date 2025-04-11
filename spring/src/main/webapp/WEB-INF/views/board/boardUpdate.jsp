@@ -36,26 +36,26 @@
             <h2>게시글 수정하기</h2>
             <br><br>
 
-            <form id="updateForm" method="post" action="" enctype="">
+            <form id="updateForm" method="post" action="/board/update?boardNo=${board.boardNo }" enctype="multipart/form-data">
                 <table align="center" class="table">
                     <tr>
                         <th width="100"><label for="title">제목</label></th>
                         <td>
-                            <input type="text" name="" id="title" class="form-control" value="게시판제목@@" required />
+                            <input type="text" name="boardTitle" id="title" class="form-control" value="${ board.boardTitle }" required />
                         </td>
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
                         <td>
-                            <input type="text" name="" id="writer" class="form-control" value="user01@@" readonly />
+                            <input type="text" name="boardWriter" id="writer" class="form-control" value="${ board.boardWriter }" readonly />
                         </td>
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
                         <td>
-                            <input type="file" name="" id="upfile" class="form-control-file border"><br>
+                            <input type="file" name="upfile" id="upfile" class="form-control-file border"><br>
                             첨부 파일 : 
-                            <a href="" download="">test.png</a>
+                        	<a href="${board.changeName }" download>${board.originName }</a>
                         </td>
                     </tr>
                     <tr>
@@ -63,7 +63,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <textarea name="" id="content" class="form-control" rows="10" style="resize:none;" required>내용입니당@@@@@</textarea>
+                            <textarea name="boardContent" id="content" class="form-control" rows="10" style="resize:none;" required>${ board.boardContent }</textarea>
                         </td>
                     </tr>
                 </table>

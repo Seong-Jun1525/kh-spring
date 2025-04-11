@@ -56,32 +56,27 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int updateBoard(Board board) {
-		// TODO Auto-generated method stub
-		return 0;
+		return bDAO.updateBoard(board);
 	}
 
 	@Override
-	public int deleteBoard(Board board) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteBoard(int boardNo) {
+		return bDAO.deleteBoard(boardNo);
 	}
 
 	@Override
 	public int insertReply(Reply reply) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public ArrayList<Reply> selectReplyList(int boardNo) {
-		// TODO Auto-generated method stub
-		return null;
+		return bDAO.selectReplyList(boardNo);
 	}
 
 	@Override
 	public int increaseCount(int boardNo) {
-		// TODO Auto-generated method stub
-		return 0;
+		return bDAO.increaseCount(boardNo);
 	}
 
 	/* 검색 조건에 따른 목록 조회 */

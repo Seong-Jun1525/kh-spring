@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="com.kh.spring.board.model.vo.Reply, com.kh.spring.board.model.vo.Board, java.util.ArrayList" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -29,7 +30,12 @@
 </head>
 <body>
     <%-- header --%>
-    <jsp:include page="../common/header.jsp" />
+    <%@ include file="../common/header.jsp" %>
+    <% 
+		ArrayList<Reply> replyList = (ArrayList<Reply>) request.getAttribute("reply");
+    	Board board = (Board)request.getAttribute("board");
+    	String memberId = board.getBoardWriter();
+    %>
 
     <div class="outer">
         <br><br>
@@ -60,7 +66,7 @@
                     <th>첨부파일</th>
                     <td colspan="3">
                         <%--${ board.originName } --%>
-                        <img src="${ image }">
+                        <a href="${board.changeName }" download><img src="${ board.changeName }" alt="${board.changeName }"></a>
                     </td>
                 </tr>
                 <tr>
@@ -77,43 +83,37 @@
             </table>
             <br>
 
-            <div align="center">
-                <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
-                <a href="" class="btn btn-primary">수정</a>
-                <a href="" class="btn btn-danger">삭제</a>
-            </div>
+            <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
+            <% if(loginMember.getUserId().equals(memberId)) { %>
+	            <div align="center">
+		                <a href="/board/update-page?boardNo=${ board.boardNo }" class="btn btn-primary">수정</a>
+		                <a id="deleteBtn" class="btn btn-danger">삭제</a>
+	            </div>
+            <% } %>
             <br><br>
 
             <table id="replyArea" class="table" align="center">
                 <thead>
                     <tr>
                         <th colspan="2">
-                            <textarea name="" id="content" cols="55" rows="2" class="form-control" style="resize: none;"></textarea>
+                            <textarea name="replyContent" id="content" cols="55" rows="2" class="form-control" style="resize: none;"></textarea>
                         </th>
                         <th style="vertical-align:middle;">
                             <button class="btn btn-secondary">등록</button>
                         </th>
                     </tr>
                     <tr>
-                        <td colspan="3">댓글 (<span id="rcount">3</span>)</td>
+                        <td colspan="3">댓글 (<span id="rcount"><%= replyList.size() %></span>)</td>
                     </tr>
                 </thead>
                 <tbody>
+                	<% for(Reply r : replyList) { %>
                     <tr>
-                        <th>user02</th>
-                        <td>댓글-----내용</td>
-                        <td>2024-04-15</td>
-                    </tr>
-                    <tr>
-                        <th>user01</th>
-                        <td>ㅋㅋㅋㅋㅋㅋㅋ</td>
-                        <td>2024-04-13</td>
-                    </tr>
-                    <tr>
-                        <th>admin</th>
-                        <td>댓글테스트ㅋㅋ</td>
-                        <td>2024-04-07</td>
-                    </tr>                         
+                        <th><%= r.getReplyWriter() %></th>
+                        <td><%= r.getReplyContent() %></td>
+                        <td><%= r.getCreateDate() %></td>
+                    </tr>                        
+                    <% } %>
                 </tbody>
             </table>     
             <br><br>
@@ -124,5 +124,45 @@
 
     <%-- footer --%>
     <jsp:include page="../common/footer.jsp" />  
+    
+    <script>
+    	window.addEventListener("load", () => {
+    		deleteBoard();
+    		insertReply();
+    	});
+    	
+    	
+    	const deleteBoard = () => {
+    		const deleteBtn = document.querySelector("#deleteBtn");
+    		deleteBtn.addEventListener("click", () => {
+    			Swal.fire({
+    				title: "게시글 삭제",
+    				icon: "question",
+    				text: "게시글을 삭제하시겠습니까?",
+    				confirmButtonColor: "#F00",
+    				confirmButtonText: "삭제",
+    				showCancelButton: "true",
+    				cancelButtonText: "취소"
+    			}).then((result) => {
+	    			if (result.isConfirmed) {
+    					location.href = "/board/delete?boardNo=${board.boardNo }";
+	    			}
+    			});
+    		});
+    	}
+    	
+    	const insertReply = () => {
+    		const replyBtn = document.querySelector("#replyArea button");
+    		
+    		// 테스트 작업중...
+    		replyBtn.addEventListener("click", () => {
+    			fetch("/reply/write", {
+    				method: "post"
+    			})
+    				.then(() => { console.log("success") })
+    				.catch(() => { console.log("fail") })
+    		});
+    	}
+    </script>
 </body>
 </html>

@@ -9,6 +9,34 @@
 		VALUES (SEQ_BNO.NEXTVAL, #{boardTitle}, #{boardWriter}, #{boardContent}, #{originName}, #{changeName})
 	</insert>
 	
+	<update id="increaseCount">
+		UPDATE BOARD SET
+			COUNT = COUNT + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="updateBoard">
+		UPDATE BOARD SET
+			BOARD_TITLE = #{boardTitle},
+			BOARD_CONTENT = #{boardContent},
+			ORIGIN_NAME = #{originName},
+			CHANGE_NAME = #{changeName}
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="deleteBoard">
+		UPDATE BOARD SET
+			STATUS = 'N'
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<select id="selectReplyList" resultType="Reply">
+		SELECT REPLY_NO, REPLY_CONTENT, REPLY_WRITER, TO_CHAR(CREATE_DATE, 'RRRR-MM-DD') AS CREATE_DATE
+		FROM REPLY
+		WHERE REF_BNO = #{boardNo} AND STATUS = 'Y'
+	</select>
+	
+	<!-- resultSet이므로 조회했을 때 결과의 컬럼명으로 resultMap에 매핑해야한다 -->
 	<select id="selectBoardDetail" resultType="Board">
 		SELECT 
 			BOARD_NO, 

@@ -19,7 +19,7 @@ public interface BoardService {
 	
 	int updateBoard(Board board);
 	
-	int deleteBoard(Board board);
+	int deleteBoard(int boardNo);
 	
 	/* 댓글 등록 */
 	int insertReply(Reply reply);
