@@ -12,4 +12,7 @@ import lombok.Data;
 public class SearchDTO {
 	private String condition;
 	private String keyword;
+	
+	// 정렬기준 추가
+	private String orderby;
 }

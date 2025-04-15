@@ -66,7 +66,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int insertReply(Reply reply) {
-		return 0;
+		return bDAO.insertReply(reply);
 	}
 
 	@Override
@@ -96,6 +96,19 @@ public class BoardServiceImpl implements BoardService {
 	public ArrayList<Board> selectBoardList(PageInfo pi, SearchDTO searchDTO) {
 		int offset = (pi.getCurrPage() - 1) * pi.getBoardLimit();
 		RowBounds rb = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.findBoardListLike(rb, searchDTO);
+	}
+
+	@Override
+	public ArrayList<Board> selectBoardRankList() {
+		// RowBounds 객체 활용 => Rowbounds(시작위치, 개수)
+		
+		// 게시글 목록 조회 시 사용했던 쿼리문 사용
+		// SearchDTO
+		RowBounds rb = new RowBounds(0, 5);
+		SearchDTO searchDTO = new SearchDTO();
+		searchDTO.setOrderby("count");
+		
 		return bDAO.findBoardListLike(rb, searchDTO);
 	}
 

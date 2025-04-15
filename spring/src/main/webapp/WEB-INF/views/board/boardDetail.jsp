@@ -99,14 +99,17 @@
                             <textarea name="replyContent" id="content" cols="55" rows="2" class="form-control" style="resize: none;"></textarea>
                         </th>
                         <th style="vertical-align:middle;">
-                            <button class="btn btn-secondary">등록</button>
+                            <button id="replyBtn" class="btn btn-secondary">등록</button>
                         </th>
                     </tr>
                     <tr>
+                        <%--
                         <td colspan="3">댓글 (<span id="rcount"><%= replyList.size() %></span>)</td>
+                         --%>
                     </tr>
                 </thead>
                 <tbody>
+                	<%--
                 	<% for(Reply r : replyList) { %>
                     <tr>
                         <th><%= r.getReplyWriter() %></th>
@@ -114,6 +117,7 @@
                         <td><%= r.getCreateDate() %></td>
                     </tr>                        
                     <% } %>
+                	 --%>
                 </tbody>
             </table>     
             <br><br>
@@ -129,12 +133,11 @@
     	window.addEventListener("load", () => {
     		deleteBoard();
     		insertReply();
+    		selectReplyList();
     	});
     	
-    	
     	const deleteBoard = () => {
-    		const deleteBtn = document.querySelector("#deleteBtn");
-    		deleteBtn.addEventListener("click", () => {
+    		$("#deleteBtn").click(() => {
     			Swal.fire({
     				title: "게시글 삭제",
     				icon: "question",
@@ -151,16 +154,79 @@
     		});
     	}
     	
+    	// 모든 요소가 로드되었을 때 버튼을 찾을 수 있음
+    	// 기본적으로는 onload안에 작성한다 하지만 페이지가 많을경우 가장 마지막의 onload가 실행되므로
+    	// window.addEventListener("load", () => {}) 메서드를 사용한다
+    	// js를 외부 방식으로 할 경우 스크립트가 먼저 실행될 수도 있으므로 load 안에 작성해야한다
+    	
     	const insertReply = () => {
-    		const replyBtn = document.querySelector("#replyArea button");
-    		
-    		// 테스트 작업중...
-    		replyBtn.addEventListener("click", () => {
-    			fetch("/reply/write", {
-    				method: "post"
-    			})
-    				.then(() => { console.log("success") })
-    				.catch(() => { console.log("fail") })
+    		$("#replyBtn").click(() => {
+    			// 입력된 댓글 내용을 추가 요청 => 비동기 통신	
+    			// console.log("c");
+    			addReply();
+    		});
+    	}
+    	
+    	
+    	function addReply() {
+    		// 입력된 값이 없을 경우 메시지 표시하고 요청 막기
+    		if($("#replyArea #content").val() === "") {
+    			Swal.fire({
+    				title: "댓글 등록",
+    				icon: "wraning",
+    				text: "댓글 작성 후 등록 가능합니다."
+    			}).then((result) => {
+    				return;
+    			});
+    		}
+    	
+    		// 비동기 통신 => ajax
+    		$.ajax({
+    			url: "/api/board/reply",
+    			method: "post", // 혹은 type
+    			data: {
+    				replyContent: $("#replyArea #content").val(), // 댓글 내용
+    				replyWriter: "${loginMember.userId}", // 로그인 사용자의 아이디
+    				refBno: ${board.boardNo}
+    			},
+    			success: (result) => {
+    				console.log(result);
+    				
+    				if(result === "success") {
+    					selectReplyList();
+    					$("#replyArea #content").val("");
+    				}
+    				
+    			},
+    			error: (error) => {
+    				console.log(error);
+    			}
+    		});
+    	}
+    	
+    	function selectReplyList() {
+    		$.ajax({
+    			url: "/api/board/reply",
+    			method: "get",
+    			data: {
+    				boardNo: ${board.boardNo}
+    			},
+    			success: (list) => {
+    				console.log(list);
+    				$("#replyArea #rcount").text(list.length);
+    				
+    				// 댓글 목록 업뎃
+    				let replyData = "";
+    				for(const r of list) {
+    					replyData += "<tr>"
+    						+ "<th>" + r.replyWriter + "</th>"
+    						+ "<td>" + r.replyContent + "</td>"
+    						+ "<td>" + r.createDate + "</td>"
+    						+ "</tr>";
+    				}
+    				
+    				$("#replyArea tbody").html(replyData);
+    			}
     		});
     	}
     </script>

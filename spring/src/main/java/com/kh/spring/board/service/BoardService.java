@@ -44,4 +44,7 @@ public interface BoardService {
 
 	/* 게시글 전체 목록 조회 */
 	ArrayList<Board> selectBoardList(PageInfo pi, SearchDTO searchDTO);
+
+	/* 게시글 순위 */
+	ArrayList<Board> selectBoardRankList();
 }

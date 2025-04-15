@@ -38,4 +38,8 @@ public interface BoardDAO {
 
 	// 게시글의 댓글 정보 조회
 	ArrayList<Reply> selectReplyList(int boardNo);
+
+	int insertReply(Reply reply);
+
+	ArrayList<Board> selectBoardRankList();
 }

@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="com.kh.spring.member.model.vo.Member, com.kh.spring.board.model.vo.Board" %>
+<%
+	Member m = (Member) request.getSession().getAttribute("loginMember");
+	Board b = (Board)request.getAttribute("board");
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,6 +41,21 @@
             <h2>게시글 수정하기</h2>
             <br><br>
 
+			<%--
+				enctype 요청형식
+				
+				=> TCP School 참조
+					<form> 태그의 enctype 속성은 폼 데이터(form data)가 서버로 제출될 때 해당 데이터가 인코딩되는 방법을 명시합니다.
+					이 속성은 <form> 요소의 method 속성값이 “post”인 경우에만 사용할 수 있습니다.
+					
+					application/x-www-form-urlencoded | 기본값으로, 모든 문자들은 서버로 보내기 전에 인코딩됨을 명시함.
+					--------------------------------------------------------------------------------------------------------------------------
+					multipart/form-data				  | 모든 문자를 인코딩하지 않음을 명시함.
+														이 방식은 <form> 요소가 파일이나 이미지를 서버로 전송할 때 주로 사용함.
+					--------------------------------------------------------------------------------------------------------------------------
+					text/plain						  | 공백 문자(space)는 "+" 기호로 변환하지만, 나머지 문자는 모두 인코딩되지 않음을 명시함.
+			 --%>
+
             <form id="updateForm" method="post" action="/board/update?boardNo=${board.boardNo }" enctype="multipart/form-data">
                 <table align="center" class="table">
                     <tr>
@@ -54,8 +74,11 @@
                         <th><label for="upfile">첨부파일</label></th>
                         <td>
                             <input type="file" name="upfile" id="upfile" class="form-control-file border"><br>
-                            첨부 파일 : 
-                        	<a href="${board.changeName }" download>${board.originName }</a>
+                            <% if(b.getOriginName() != null) { %>
+	                            첨부 파일 : <a href="${board.changeName }" download>${board.originName }</a>
+	                            <input type="hidden" name="originName" value="${board.originName }" />
+	                            <input type="hidden" name="changeName" value="${board.changeName }" />
+                        	<%} %>
                         </td>
                     </tr>
                     <tr>
@@ -71,8 +94,10 @@
 
                 <div align="center">
                     <!-- 작성자와 로그인한 계정이 동일한 경우만 표시 -->
-                    <button type="submit" class="btn btn-primary">수정</button>
-                    <button type="button" class="btn btn-danger" onclick="history.go(-1);">이전</button>
+                    <% if(m.getUserId().equals(b.getBoardWriter())) { %>
+	                    <button type="submit" class="btn btn-primary">수정</button>
+	                    <button type="button" class="btn btn-danger" onclick="history.go(-1);">이전</button>
+                    <% } %>
                 </div>
                 <br><br>
             </form>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,7 +18,6 @@ import com.kh.spring.board.model.vo.Reply;
 import com.kh.spring.board.service.BoardService;
 import com.kh.spring.common.MyFileUtils;
 import com.kh.spring.common.PageInfo;
-import com.kh.spring.member.model.vo.Member;
 import com.kh.spring.member.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -144,18 +144,19 @@ public class BoardController {
 		// 이렇게 경로를 붙여주거나 아예 DB에 경로를 붙여서 저장하거나 둘 중 한 선택!
 		
 		// [3] 해당 게시글의 댓글 정보 조회
-		ArrayList<Reply> reply = new ArrayList<>();
-		reply = bService.selectReplyList(boardNo);
+//		ArrayList<Reply> reply = new ArrayList<>();
+//		reply = bService.selectReplyList(boardNo);
 		
 		if(board != null) {
 			mv.addObject("board", board);
-			mv.addObject("reply", reply);
+//			mv.addObject("reply", reply);
 			mv.setViewName("board/boardDetail");
 		}
 		
 		return mv;
 	}
 	
+	// 게시글 수정 페이지 요청
 	@GetMapping("/update-page")
 	public ModelAndView boardUpdatePage(@RequestParam(required = true) int boardNo, ModelAndView mv) {
 		// [1] 해당 게시글 정보 조회
@@ -163,20 +164,26 @@ public class BoardController {
 
 		String image = "/resources/upfile/" + board.getChangeName();
 		if(board != null) {
+			// 응답 페이지에서 사용하기 위해 request 영역에 저장!
 			mv.addObject("board", board);
 			mv.addObject("image", image);
-			mv.setViewName("board/boardUpdate");
+			mv.setViewName("board/boardUpdate"); // 컨텐트 디렉터리 기준으로 생각하자!!
 		}
 		
 		return mv;
 	}
 	
+	// 게시글 수정 요청
 	@PostMapping("/update")
 	public String boardUpdate(@RequestParam(required = true) int boardNo, MultipartFile upfile, Board board, HttpSession session, Model model) {
 		System.out.println(boardNo);
 		System.out.println(board);
+		// 새로 추가된 첨부파일이 있는 경우
+		// Board 객체에 첨부파일 정보를 저장. 서버에 해당 파일 저장.
 		
+		// 새로운 첨부파일이 있는 지 체크
 		// 첨부파일이 있는 경우 파일에 대한 처리
+		// 파일의 크기가 0이여도 true가 됨 이건 없는거나 마찬가지이므로 이거에 대한 예외 처리도 필요함
 		if(!upfile.isEmpty()) {
 			// 파일명 변경 -> "spring_" + 현재날짜 + 랜덤값 + 확장자
 			String changeName = MyFileUtils.saveFile(upfile, session, "/resources/upfile/");
@@ -184,6 +191,9 @@ public class BoardController {
 			// Board 객체에 파일 관련된 필드 => originName, changeName
 			board.setOriginName(upfile.getOriginalFilename()); // 파일 원본명 저장
 			board.setChangeName(changeName);
+			
+			// TODO: 기존 첨부파일이 있을 경우 해당 파일 삭제
+			
 		}
 		
 		int result = bService.updateBoard(board);
@@ -192,7 +202,7 @@ public class BoardController {
 			session.setAttribute("alertTitle", "게시글 수정");
 			session.setAttribute("alertIcon", "success");
 			session.setAttribute("alertMsg", "게시글을 수정했습니다.");
-			return "redirect:/board/list";
+			return "redirect:/board/detail?boardNo=" + boardNo;
 		} else {
 			model.addAttribute("errorMsg", "게시글 수정에 실패했습니다.");
 			return "common/errorPage";
@@ -215,6 +225,5 @@ public class BoardController {
 			model.addAttribute("errorMsg", "게시글 등록에 실패했습니다.");
 			return "common/errorPage";
 		}
-		
 	}
 }
