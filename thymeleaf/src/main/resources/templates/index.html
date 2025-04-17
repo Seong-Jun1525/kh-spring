@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Thymeleaf</title>
+</head>
+<body>
+	<h1>Template Engine :: Thymeleaf</h1>
+
+	<h2>1. Thymeleaf란?</h2>
+	<p>
+		Thymeleaf는 Spring boot에서 권장하는 템플릿 엔진 중 하나로
+		HTML 파일 내에서 Java 객체를 직접 출력하거나
+		제어문을 사용할 수 있게 해주는 엔진이다.
+		<br><br>
+
+		JSP 처럼 서버 데이터를 표현할 수 있지만,
+		HTML에 친화적이므로 브라우저에서도 깨지지 않고 잘 표시되며
+		문법이 직관적이다.
+	</p>
+
+	<h2>2. Thymeleaf 문법</h2>
+	<h3>1) 데이터 접근법</h3>
+	<ol>
+		<li>
+			<code>${키값}</code> : Model(request 영역)에 저장된 데이터에 접근<br>
+			ex) model.addAttribute("키값", data);
+		</li>
+		<li>
+			<code>${param.키값}</code> : HTTP 요청 파라미터 데이터에 접근<br>
+			ex) url?키값=data
+		</li>
+		<li>
+			<code>${session.키값}</code> : 세션 영역에 저장된 데이터에 접근<br>
+			ex) session.setAttribute("키값", data);
+		</li>
+		<li>
+			<code>${application.키값}</code> : 애플리케이션 영역에 저장된 데이터 접근<br>
+			ex) application.setAttribute("x", data);
+		</li>
+	</ol>
+
+	<h3>2) 데이터 표현법</h3>
+	<ol>
+		<li>
+			<code>${변수}</code> : 변수 참조, 변수 접근
+		</li>
+		<li>
+			<code>*{변수}</code> : th:object로 바인딩된(연결된) 객체의 속성에 접근하고자 할 때 표현
+			ex) 주로 form 태그에서 사용<br>
+			&lt;form th:object="${member}""&gt;<br>
+
+				&lt;intput type-"text" name = "memberId" th:field="*{필드명}" /"&gt;<br>
+				&lt;intput type-"password" name = "memberPwd" th:field="*{필드명}" /"&gt;<br>
+			
+			&lt;/from&gt;
+		</li>
+		<li>
+			<code>#{키값}</code> : 메시지 표현 <br>
+			- 고정 텍스트 또는 다국어 처리(i18n) 시 사용. <br>
+			- message.properties 파일에 설정된 데이터를 가져옴 (message_국가.properties)
+		</li>
+		<li>
+			<code>@{url링크}</code> URL 링크 표현
+			ex) 동적인 링크 생성 시 사용 <br>
+			&lt;a th:href="@{/product/detail(id=${product.id})}"&gt;상세보기&lt;/a&gt;
+		</li>
+		<li>
+			<code>~{}</code> : Fragment 표현 <br>
+			Fragment : 템플릿 조각을 의미 <br>
+			<ul>
+				<li>
+					<b>[ Fragment 정의 ]</b> th:fragment="이름"
+				</li>
+				<li>
+					<b>[ th:include ]</b> 대상 템플릿 내용만 포함
+					<div style="color: red; border: 0.1rem solid red;" th:include="~{fragments/test :: header}">
+					</div>
+				</li>
+				<li>
+					<b>[ th:insert ]</b> 대상 템플릿을 삽입
+					<div style="color: red; border: 0.1rem solid red;" th:insert="~{fragments/test :: header}">
+					</div>
+				</li>
+				<li>
+					<b>[ th:replace ]</b> 대상 템플릿으로 대체
+					<div style="color: red; border: 0.1rem solid red;" th:replace="~{fragments/test :: header}">
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ol>
+
+	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
