@@ -211,17 +211,17 @@
     			data: {
     				boardNo: ${board.boardNo}
     			},
-    			success: (list) => {
-    				console.log(list);
-    				$("#replyArea #rcount").text(list.length);
+    			success: (replyList) => {
+    				console.log(replyList);
+    				$("#replyArea #rcount").text(replyList.length);
     				
     				// 댓글 목록 업뎃
     				let replyData = "";
-    				for(const r of list) {
+    				for(const replyItem of replyList) {
     					replyData += "<tr>"
-    						+ "<th>" + r.replyWriter + "</th>"
-    						+ "<td>" + r.replyContent + "</td>"
-    						+ "<td>" + r.createDate + "</td>"
+    						+ "<th>" + replyItem.replyWriter + "</th>"
+    						+ "<td>" + replyItem.replyContent + "</td>"
+    						+ "<td>" + replyItem.createDate + "</td>"
     						+ "</tr>";
     				}
     				

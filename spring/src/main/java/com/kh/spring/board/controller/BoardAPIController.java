@@ -43,19 +43,12 @@ public class BoardAPIController {
 	@GetMapping("/reply")
 	@ResponseBody
 	public ArrayList<Reply> selectReplyList(@RequestParam(required=true) int boardNo) {
-		ArrayList<Reply> reply = new ArrayList<>();
-		reply = bService.selectReplyList(boardNo);
-		
-		return reply;
+		return bService.selectReplyList(boardNo);
 	}
 	
 	@GetMapping("/top5")
 	@ResponseBody
 	public ArrayList<Board> selectBoardRank() {
-		
-		ArrayList<Board> boardRankList = bService.selectBoardRankList();
-		
-		
-		return boardRankList;
+		return bService.selectBoardRankList();
 	}
 }
