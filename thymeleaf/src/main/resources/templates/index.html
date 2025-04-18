@@ -3,6 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Thymeleaf</title>
+	<style type="text/css">
+		.box {
+			border-radius: 1rem;
+			background-color: #ccc;
+		}
+	</style>
 </head>
 <body>
 	<h1>Template Engine :: Thymeleaf</h1>
@@ -46,14 +52,16 @@
 			<b><code>${변수}</code> : 변수 참조, 변수 접근</b>
 		</li>
 		<li>
-			<b><code>*{변수}</code> : th:object로 바인딩된(연결된) 객체의 속성에 접근하고자 할 때 표현</b>
-			ex) 주로 form 태그에서 사용<br>
-			&lt;form th:object="${member}"&gt;<br>
-
-			&nbsp;&nbsp;&lt;input type="text" name="memberId" th:field="*{필드명}" /"&gt;<br>
-			&nbsp;&nbsp;&lt;input type="password" name="memberPwd" th:field="*{필드명}" /"&gt;<br>
-			
-			&lt;/from&gt;
+			<b><code>*{변수}</code> : th:object로 바인딩된(연결된) 객체의 속성에 접근하고자 할 때 표현</b><br>
+			ex) <b>주로 form 태그에서 사용</b><br>
+			<div class="box">
+				&lt;form th:object="${member}"&gt;<br>
+	
+				&nbsp;&nbsp;&lt;input type="text" name="memberId" th:field="*{필드명}" /"&gt;<br>
+				&nbsp;&nbsp;&lt;input type="password" name="memberPwd" th:field="*{필드명}" /"&gt;<br>
+				
+				&lt;/from&gt;
+			</div>
 		</li>
 		<li>
 			<b><code>#{키값}</code> : 메시지 표현</b> <br>
@@ -63,7 +71,9 @@
 		<li>
 			<b><code>@{url링크}</code> URL 링크 표현</b>
 			ex) 동적인 링크 생성 시 사용 <br>
-			&lt;a th:href="@{/product/detail(id=${product.id})}"&gt;상세보기&lt;/a&gt;
+			<div class="box">
+				&lt;a th:href="@{/product/detail(id=${product.id})}"&gt;상세보기&lt;/a&gt;
+			</div>
 		</li>
 		<li>
 			<b><code>~{}</code> : Fragment 표현</b> <br>
@@ -74,7 +84,7 @@
 				</li>
 				<li>
 					<b>[ th:include ]</b> 대상 템플릿 내용만 포함
-					<div style="color: red; border: 0.1rem solid red;" th:include="~{fragments/test :: header}">
+					<div style="color: red; border: 0.1rem solid red;" th:include="~{fragments/test :: header}"> <!-- templates 폴더 기준으로 경로 작성 -->
 					</div>
 				</li>
 				<li>
@@ -98,14 +108,16 @@
 		</li>
 		<li>
 			<b><code>th:value="${변수}"</code></b> : 입력 요소의 텍스트를 출력 <br>
-			* textarea의 경우 th:text 사용해야함!
+			<small style="color: red;">* textarea의 경우 th:text 사용해야함!</small>
 		</li>
 	</ul>
-	<pre>
-		&lt;span th:text="${post.title}"&gt;제목&lt;/span&gt;
-		
-		&lt;input type="text" th:value="${post.title}" /&gt;
-	</pre>
+	<div class="box">
+		<pre>
+			&lt;span th:text="${post.title}"&gt;제목&lt;/span&gt;
+			
+			&lt;input type="text" th:value="${post.title}" /&gt;
+		</pre>
+	</div>
 
 	<h3>4) 텍스트 출력</h3>
 
@@ -123,24 +135,38 @@
 	<p>
 		<b><code>th:if</code>, <code>th:unless</code></b> : 조건에 따라 출력 (null은 false로 인식됨)
 	</p>
-	&lt;div th:if="${session.loginUser != null}"&gt;xxx사용자 접속&lt;/div&gt; <br>
-	&lt;div th:unless="${session.loginUser}"&gt;로그인 필요!&lt;/div&gt;
+	<div class="box">
+		&lt;div th:if="${session.loginUser != null}"&gt;xxx사용자 접속&lt;/div&gt; <br>
+		&lt;div th:unless="${session.loginUser}"&gt;로그인 필요!&lt;/div&gt;
+	</div>
 
 	<h3>6) 반복문</h3>
 	<p>
-		<!-- forEach문! -->
-		<b><code>th:each="변수명 : ${리스트}"</code></b> : 리스트 순회하며 반복!! (순차적으로 반복!!)
+		<b><code>th:each="변수명 : ${#numbers.sequence(시작번호, 끝번호[, 증가값])}"</code></b>
 	</p>
-	&lt;tr th:each="product : ${productList}"&gt; <br>
-	&nbsp;&nbsp;&lt;td th:text="${product.name}"&gt;제품명&lt;/td&gt; <br>
-	&nbsp;&nbsp;&lt;td th:text="${product.price}"&gt;제품가격&lt;/td&gt; <br>
-	&lt;/tr&gt; <br>
+	<div th:each="num : ${#numbers.sequence(1, 5)}">
+		<span th:text=${num}>1</span>
+	</div>
+	
+	<p>
+		<!-- forEach문! -->
+		<b><code>th:each="변수명 : ${리스트}"</code></b> : 리스트 순회하며 반복!! (순차적으로 반복!!)<small>(기본적으로 html 문법에 맞도록 작성하자)</small>
+		
+	</p>
+	<div class="box">
+		&lt;tr th:each="product : ${productList}"&gt; <br>
+		&nbsp;&nbsp;&lt;td th:text="${product.name}"&gt;제품명&lt;/td&gt; <br>
+		&nbsp;&nbsp;&lt;td th:text="${product.price}"&gt;제품가격&lt;/td&gt; <br>
+		&lt;/tr&gt; <br>
+	</div>
 
 	<h3>7) 날짜 포맷</h3>
 	<p>
 		<b><code>#dates.format(날짜, 형식)</code></b>
 	</p>
-	&lt;span th:text="#{dates.format(product.createDate, 'yyyy-MM-dd')}"&gt;여기에 날짜를 표시합니다.&lt;/span&gt;
+	<div class="box">
+		&lt;span th:text="#{dates.format(product.createDate, 'yyyy-MM-dd')}"&gt;여기에 날짜를 표시합니다.&lt;/span&gt;
+	</div>
 
 	<h3>8) 그 외 표현식</h3>
 	<ul>
@@ -157,6 +183,42 @@
 
 	<!-- 현재 시간정보를 2025-04-17 16:09:30 -->
 	<mark><span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd hh:mm:ss')}">현재시간</span></mark>
+	
+	<br><br>
+	<h2>3. 연습하기</h2>
+	<a href="/go">페이지 이동</a><br>
+	
+	<p class="box">
+		context path가 추가되었을 경우 모든 링크 앞에 context path를 수동으로 붙여야하는데<br>
+		url 표현식을 사용하게되면 자동으로 context path를 붙여준다
+	</p>
+	<a th:href="@{/go}">페이지 이동</a>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>

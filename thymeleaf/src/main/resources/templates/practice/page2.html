@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{css/page2.css}" >
+
+</head>
+<body>
+	<p>
+	 	정적 파일(js, css, image)들은 classpath(src/main/resources) 경로의 static 폴더에서 관리한다
+	</p>
+	<hr>
+
+
+
+	<h1>request</h1>
+	<h2 style="color: purple;">
+		이름 : <span th:text="${p.name}"></span><br>
+		나이 : <span th:text="${p.age}"></span><br>
+		생년월일 : <span th:text="${p.birth}"></span><br>
+		취미 : 
+		<!-- 취미가 있을 경우 없을 경우 나눠서 표시 -->
+		<span th:if="${p.hobby != null}">
+			<span th:each="h : ${p.hobby}"><span th:text="${h}"></span> </span>
+		</span>
+		<span th:unless="${p.hobby}">
+			없음
+		</span>
+	</h2>
+	<hr>
+	
+	<h1>model</h1>
+	<table border=1 style="font-size: 1.3rem;">
+		<thead>
+			<tr>
+				<th>이름</th>
+				<th>나이</th>
+				<th>생년월일</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr th:if="${list != null}" th:each="user : ${list}" style="background-color: yellow">
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.age}"></td>
+				<td th:text="${user.birth}"></td>
+			</tr>
+			
+			<tr th:each="user: ${list}" th:object="${user}">
+				<td th:text="*{name}"></td>
+				<td th:text="*{age}"></td>
+				<td th:text="*{birth}"></td>
+			</tr>
+			
+			<tr th:unless="${list}"><td colspan="3">데이터 없음</td></tr>
+		</tbody>
+	</table>
+	<hr>
+	
+	<h1>session</h1>
+	<h2 style="color: red;">
+		이름 : <span th:text="${session.user.name}"></span><br>
+		나이 : <span th:text="${session.user.age}"></span><br>
+		생년월일 : <span th:text="${session.user.birth}"></span><br>
+		취미 :
+		<!-- 취미가 있을 경우 없을 경우 나눠서 표시 -->
+		<!-- 배열에 + '' 해서 toString으로 바꿔주면 반복문을 사용하지 않아도 정상 출력됨 -->
+		<span th:if="${session.user.hobby != null}" th:text="${session.user.hobby + ''}">
+		</span>
+		<span th:unless="${session.user.hobby}">
+			없음
+		</span>
+	</h2>
+</body>
+</html>
