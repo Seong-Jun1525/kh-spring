@@ -62,24 +62,28 @@ import lombok.extern.slf4j.Slf4j;
  * 			+ @Around : 대상 메서드를 감싸서 호출 전/후로 Advice 실행
  */
 
-@Slf4j // lombok에서 제공해주는 Logger 객체. 변수명 : log
-@Aspect
-@Component
+@Slf4j // lombok이 제공하는 Logger 객체 자동 생성 (log 변수명으로)
+@Aspect // 이 클래스가 AOP 관점(Aspect)임을 선언
+@Component // 스프링 빈(Bean)으로 등록
 public class LoggingAspect {
 	
 	// 대상 지정
 	@Pointcut("execution(* com.kh.spring..controller.*.*(..))") // 실행되는 메서드 지정, 접근 제한자 지정할 수도 있음
 	private void controllerPointCut() { }
+	// Pointcut: com.kh.spring 하위의 모든 controller 패키지의 메서드를 타겟으로 지정
 	
 	// 부가기능 정의(Advice)
+	// @Before: 타겟 메서드 실행 전에 동작하는 Advice
 	@Before("controllerPointCut()") // PointCut을 지정한 메서드 작성
 	public void beforeAdvice(JoinPoint joinPoint) {
 		// 실행되는 메서드 정보를 추출
 		MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
-		Method method = methodSignature.getMethod();
+		// 현재 호출된 메서드의 시그니처(메서드명, 파라미터 등)를 가져옴
+		Method method = methodSignature.getMethod(); // 실제 실행될 Method 객체 가져오기
 		
 		// 파라미터 추출
 		Object[] obj = joinPoint.getArgs();
+		// 현재 호출된 메서드의 파라미터(인자) 정보 가져오기
 		
 		log.info("=============== Before ===============");
 		
@@ -88,18 +92,23 @@ public class LoggingAspect {
 		log.info("parameter :: {}", Arrays.toString(obj));
 	}
 	
+	// @AfterReturning: 메서드가 정상적으로 실행 완료된 후 동작하는 Advice
+	// returning 속성: 리턴된 값을 받아서 obj로 처리
 	@AfterReturning(value = "controllerPointCut()", returning = "obj")
 	public void afterRetruningAdvoice(JoinPoint joinPoint, Object obj) {
 		log.info("=============== After Returning Advice ===============");
 		log.info("object :: {}", obj);
 	}
 
+	// @Around: 메서드 실행 전후로 감싸서 실행하는 Advice
+	// ProceedingJoinPoint는 proceed()를 통해 메서드 실행을 제어할 수 있음
+	// Around 어드바이스는 JoinPoint의 하위 클래스인 ProceedingJoinPoint 타입의 파라미터를 필수적으로 선언해야 한다. 
 	@Around("controllerPointCut()")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable { // JoinPoint 객체를 좀 더 세분화해서 전달받음
 		log.info("=============== Around Advice ===============");
 		long start = System.currentTimeMillis();
 		
-		Object execute = joinPoint.proceed();
+		Object execute = joinPoint.proceed(); // 대상 메서드 실제 실행 (proceed())
 		
 		long end = System.currentTimeMillis();
 		
@@ -109,6 +118,8 @@ public class LoggingAspect {
 		return execute;
 	}
 	
+	// @AfterThrowing: 메서드 실행 중 예외가 발생했을 때 동작하는 Advice
+	// throwing 속성: 던져진 예외 객체를 error로 받음
 	@AfterThrowing(pointcut = "controllerPointCut()", throwing="error")
 	public void thrwoingAdvice(JoinPoint joinPoint, Throwable error) {
 		log.info("=============== After Throwing ===============");
