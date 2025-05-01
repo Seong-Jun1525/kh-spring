@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "client.origins",
+  "type": "java.lang.String",
+  "description": "A description for 'client.origins'"
+}]}

@@ -72,6 +72,16 @@ public class LoggingAspect {
 	private void controllerPointCut() { }
 	// Pointcut: com.kh.spring 하위의 모든 controller 패키지의 메서드를 타겟으로 지정
 	
+	/** JoinPoint Interface 메소드
+	 
+	 	getArgs() 			메소드의 매개 변수를 반환한다.
+		getThis() 			현재 사용 중인 프록시 객체를 반환한다.
+		getTarget() 		대상 객체를 반환한다.
+		getSignature() 		대상 객체 메소드의 설명(메소드 명, 리턴 타입 등)을 반환한다.
+		toString() 			대상 객체 메소드의 정보를 출력한다 
+		
+	 */
+	
 	// 부가기능 정의(Advice)
 	// @Before: 타겟 메서드 실행 전에 동작하는 Advice
 	@Before("controllerPointCut()") // PointCut을 지정한 메서드 작성
@@ -82,7 +92,7 @@ public class LoggingAspect {
 		Method method = methodSignature.getMethod(); // 실제 실행될 Method 객체 가져오기
 		
 		// 파라미터 추출
-		Object[] obj = joinPoint.getArgs();
+		Object[] obj = joinPoint.getArgs(); // 클라이언트가 메소드를 호출할 때 넘겨준 인자 목록을 Object 배열 로 리턴
 		// 현재 호출된 메서드의 파라미터(인자) 정보 가져오기
 		
 		log.info("=============== Before ===============");
