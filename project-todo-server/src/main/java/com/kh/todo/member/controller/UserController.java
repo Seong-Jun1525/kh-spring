@@ -6,15 +6,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.todo.member.model.vo.UserDTO;
 import com.kh.todo.member.service.MailService;
+import com.kh.todo.member.service.UserService;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor // 롬복을 이용하여 생성자 주입 처리
-public class MemberController {
+public class UserController {
 	private final MailService mailService;
+	private final UserService userService;
 	/**
 	 * 이메일을 전달받아 인증코드를 메일로 전송
 	 * @param email
@@ -73,11 +76,29 @@ public class MemberController {
 	@PostMapping("/checkId")
 	public String checkId(@RequestBody Map<String, Object> requestBody) {
 		
-		String id = (String) requestBody.get("id");
+		String id = (String) requestBody.get("userId");
+		System.out.println(id);
 		 
-		int result = 0;
+		boolean result = userService.checkId(id);
+		System.out.println(result);
 		
-		return result > 0 ? "NNNNN" : "NNNNY";
+		return result ? "NNNNY" : "NNNNN";
+	}
+	
+	/**
+	 * 회원가입
+	 * 
+	 * @param UserDTO 회원정보 {userId, userPwd, nickname, email}
+	 * @return "success" : 가입성공, "failed" : 가입 실패
+	 */
+	@PostMapping("user") 
+	public String registerUser(@RequestBody UserDTO userDTO) {
+		
+		System.out.println(userDTO);
+		
+		int result = userService.register(userDTO);
+		System.out.println("result : " + result);
+		return result > 0 ? "success" : "failed";
 	}
 	
 }
