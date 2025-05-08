@@ -8,6 +8,11 @@
     WHERE USER_ID = #{userId}
   </select>
   
+  <select id="findByUserIdAndUserPwd" resultType="com.kh.todo.member.model.vo.User">
+  	SELECT USER_ID, NICKNAME, EMAIL FROM TB_USER
+  	WHERE USER_ID = #{userId} AND USER_PWD = #{userPwd}
+  </select>
+  
   <insert id="insertUser">
   	INSERT INTO TB_USER VALUES(#{userId}, #{userPwd}, #{nickname}, #{email}, DEFAULT)
   </insert>

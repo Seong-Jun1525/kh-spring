@@ -3,6 +3,7 @@ package com.kh.todo.member.model.dao;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.kh.todo.member.model.vo.User;
 import com.kh.todo.member.model.vo.UserDTO;
 
 @Repository
@@ -24,5 +25,10 @@ public class UserMapper {
 	public int insertUser(UserDTO userDTO) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("UserMapper.insertUser", userDTO);
+	}
+
+	public User findByUserIdAndUserPwd(UserDTO userDTO) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("UserMapper.findByUserIdAndUserPwd", userDTO);
 	}
 }

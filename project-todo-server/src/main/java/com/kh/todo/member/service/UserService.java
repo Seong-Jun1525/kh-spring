@@ -3,6 +3,7 @@ package com.kh.todo.member.service;
 import org.springframework.stereotype.Service;
 
 import com.kh.todo.member.model.dao.UserMapper;
+import com.kh.todo.member.model.vo.User;
 import com.kh.todo.member.model.vo.UserDTO;
 
 @Service
@@ -26,7 +27,10 @@ public class UserService { // 비즈니스 로직 담당
 	}
 
 	public int register(UserDTO userDTO) {
-		// TODO Auto-generated method stub
 		return userMapper.insertUser(userDTO);
+	}
+
+	public User login(UserDTO userDTO) {
+		return userMapper.findByUserIdAndUserPwd(userDTO);
 	}
 }

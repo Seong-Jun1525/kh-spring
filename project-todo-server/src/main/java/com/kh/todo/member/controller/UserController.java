@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.todo.member.model.vo.User;
 import com.kh.todo.member.model.vo.UserDTO;
 import com.kh.todo.member.service.MailService;
 import com.kh.todo.member.service.UserService;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController // @Controller + @ResponseBody
@@ -101,4 +103,25 @@ public class UserController {
 		return result > 0 ? "success" : "failed";
 	}
 	
+	/**
+	 * 로그인(회원정보 조회)
+	 * 
+	 * [POST] /login
+	 * 
+	 * @param UserDTO 로그인 정보 {userId: 아이디, userPwd: 비밀번호}
+	 * @return "success" : 로그인 성공, "failed" : 로그인 실패
+	 */
+	@PostMapping("/login")
+	public String login(@RequestBody UserDTO userDTO, HttpSession session) {
+		System.out.println(userDTO);
+		
+		User user = userService.login(userDTO);
+
+		if(user != null) {
+			session.setAttribute("userInfo", user);
+			// session => 서버에서만 관리 클라이언트는 접근할 수 없음!
+			return "success";
+		}
+		return "failed";
+	}
 }
