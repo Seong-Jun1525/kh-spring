@@ -22,10 +22,14 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 				.allowedOrigins(origins)
-				.allowedMethods("GET", "POST", "PUT", "DELETE")
+				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 				.allowedHeaders("*")
 				.allowCredentials(true);
 	}
+	
+	/**
+	 * Access to XMLHttpRequest at 'http://localhost:8080/todo' from origin 'http://localhost:5173' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status.
+	 */
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

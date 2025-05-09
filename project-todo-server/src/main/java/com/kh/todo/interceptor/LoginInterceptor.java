@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.kh.todo.user.model.vo.UserDTO;
+import com.kh.todo.user.model.vo.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,11 +22,16 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handle) throws IOException {
+		// OPTIONS 요청에 대하여 인증체크 없이 허용. CORS prefligt 요청
+		if(request.getMethod().equalsIgnoreCase("OPTIONS")) { // 대소문자 구분없이
+			response.setStatus(HttpServletResponse.SC_OK); // 200
+			return true;
+		}
 		
 		// 세션 정보를 가져와야 함
 		HttpSession session = request.getSession();
 		
-		if((UserDTO)session.getAttribute("user") != null) return true;
+		if((User)session.getAttribute("userInfo") != null) return true;
 		else {
 			// 헤더 설정
 //			response.setStatus(401);

@@ -3,5 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd"> <!-- 파일 잘 설정되어있는지 유효성검사 -->
 <mapper namespace="TodoMapper">
-
+	<select id="findByTodoAll" resultType="Todo">
+		SELECT * FROM TB_TODO WHERE USER_ID = #{userId} AND STATUS = 1
+	</select>
+	
+	<select id="selectByLastNo" resultType="Todo">
+		SELECT * FROM TB_TODO WHERE NO = (
+			SELECT MAX(NO) FROM TB_TODO WHERE USER_ID = #{userId} AND STATUS = 1
+		)
+	</select>
+	
+	<insert id="insertTodo">
+		INSERT INTO TB_TODO VALUES(SEQ_TNO.NEXTVAL, #{userId}, #{content}, 1, DEFAULT)
+	</insert>
 </mapper>
