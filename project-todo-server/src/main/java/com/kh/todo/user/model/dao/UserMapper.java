@@ -1,10 +1,10 @@
-package com.kh.todo.member.model.dao;
+package com.kh.todo.user.model.dao;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
-import com.kh.todo.member.model.vo.User;
-import com.kh.todo.member.model.vo.UserDTO;
+import com.kh.todo.user.model.vo.User;
+import com.kh.todo.user.model.vo.UserDTO;
 
 @Repository
 public class UserMapper {

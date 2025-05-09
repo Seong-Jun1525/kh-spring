@@ -1,4 +1,4 @@
-package com.kh.todo.member.controller;
+package com.kh.todo.user.controller;
 
 import java.util.Map;
 
@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.todo.member.model.vo.User;
-import com.kh.todo.member.model.vo.UserDTO;
-import com.kh.todo.member.service.MailService;
-import com.kh.todo.member.service.UserService;
+import com.kh.todo.user.model.vo.User;
+import com.kh.todo.user.model.vo.UserDTO;
+import com.kh.todo.user.service.MailService;
+import com.kh.todo.user.service.UserService;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;

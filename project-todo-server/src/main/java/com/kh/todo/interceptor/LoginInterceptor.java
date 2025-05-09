@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.kh.todo.member.model.vo.UserDTO;
+import com.kh.todo.user.model.vo.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

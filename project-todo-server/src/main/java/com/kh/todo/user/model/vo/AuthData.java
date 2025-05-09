@@ -1,4 +1,4 @@
-package com.kh.todo.member.model.vo;
+package com.kh.todo.user.model.vo;
 
 import lombok.Data;
 

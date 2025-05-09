@@ -1,10 +1,10 @@
-package com.kh.todo.member.service;
+package com.kh.todo.user.service;
 
 import org.springframework.stereotype.Service;
 
-import com.kh.todo.member.model.dao.UserMapper;
-import com.kh.todo.member.model.vo.User;
-import com.kh.todo.member.model.vo.UserDTO;
+import com.kh.todo.user.model.dao.UserMapper;
+import com.kh.todo.user.model.vo.User;
+import com.kh.todo.user.model.vo.UserDTO;
 
 @Service
 public class UserService { // 비즈니스 로직 담당

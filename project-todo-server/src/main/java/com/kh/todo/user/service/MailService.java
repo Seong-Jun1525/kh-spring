@@ -1,4 +1,4 @@
-package com.kh.todo.member.service;
+package com.kh.todo.user.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.kh.todo.member.model.vo.AuthData;
+import com.kh.todo.user.model.vo.AuthData;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
