@@ -30,7 +30,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 	/**
 	 * 요청 전 처리 : preHandle
-	 * 응답 전 처리 : postHandle
+	 * 응답 후 처리 : postHandle
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

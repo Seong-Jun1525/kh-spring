@@ -13,14 +13,18 @@ import com.kh.opendata.model.dto.ListDTO;
 import com.kh.opendata.model.vo.AirVO;
 import com.kh.opendata.service.ApiService;
 
+//@RequiredArgsConstructor
 @Controller
 public class ApiController {
 	
+	// @RequiredArgsConstructor를 사용 시 final을 붙여야한다
 	private ApiService apiService;
 	
 	public ApiController(ApiService apiService) {
 		this.apiService = apiService;
 	}
+	
+	
 	
 //	// [GET] /air-pollutions?locationName=선택된지역명
 //	@GetMapping("air-pollutions")
@@ -55,6 +59,7 @@ public class ApiController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(totalCount);
 
 		// 보여줄 최대 행수와 페이지 수
 		int pageLimit = 10;
