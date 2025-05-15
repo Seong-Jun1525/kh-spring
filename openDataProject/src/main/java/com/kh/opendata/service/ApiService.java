@@ -3,6 +3,7 @@ package com.kh.opendata.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kh.opendata.common.PageInfo;
+import com.kh.opendata.model.dto.AirResponseDTO;
 import com.kh.opendata.model.vo.AirVO;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -163,6 +164,118 @@ public class ApiService {
 		
 		for(AirVO av : list) {
 			System.out.println(av);
+		}
+		
+		return list;
+	}
+
+	/**
+	 * 공공데이터 API를 사용하여 대기오염 정보 조회
+	 * @param locationName
+	 * @param currentPageNo
+	 * @return
+	 * @throws IOException 
+	 */
+	public AirResponseDTO getAirPollutionUpgrade(String locationName, int currentPageNo) throws IOException {
+		// 요청 URL
+		String url = makeAirPollutionURL(locationName, currentPageNo); // 만약 매개변수가 다르지만 같은 메서드를 호출해야할 경우에는 메서드를 오버로딩해서 하나 더 만든다!
+		
+		// 응답데이터
+		String responseData = getAirPollutionResponse(url);
+		
+		JsonObject bodyObj = JsonParser.parseString(responseData.toString()).getAsJsonObject().getAsJsonObject("response").getAsJsonObject("body");
+		
+		AirResponseDTO airResponseDTO = new AirResponseDTO();
+		airResponseDTO.setTotalCount(bodyObj.get("totalCount").getAsInt());
+		airResponseDTO.setNumOfRows(bodyObj.get("numOfRows").getAsInt());
+		airResponseDTO.setPageNo(bodyObj.get("pageNo").getAsInt());
+		
+		List<AirVO> list = setListAirVO(bodyObj.getAsJsonArray("items"));
+		
+		airResponseDTO.setItems(list);
+		
+		return airResponseDTO;
+	}
+	
+	/**
+	 * 시도별 실시간 대기오염 요청 URL 생성
+	 * @param sidoName 지역 정보
+	 * @param pageNo 페이지 번호
+	 * @return 요청 URL
+	 * @throws UnsupportedEncodingException 
+	 */
+	private String makeAirPollutionURL(String locationName, int currentPageNo) throws UnsupportedEncodingException {
+		// 요청주소 + 파라미터
+		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
+		url += "?serviceKey=" + serviceKey;
+		url += "&sidoName=" + URLEncoder.encode(locationName, "UTF-8");
+		url += "&pageNo=" + currentPageNo;
+		url += "&returnType=json";
+		
+		return url;
+	}
+
+	/**
+	 * 요청 후 응답데이터 반환
+	 * @param url 요청주소
+	 * @return 성공 시 응답데이터 문자열, 실패 시 null
+	 * @throws IOException 
+	 */
+	private String getAirPollutionResponse(String url) throws IOException {
+		// 요청 전송 URL, HttpURLConnection
+		URL requestURL = new URL(url);
+		
+		// 응답데이터 읽어오기
+		// (2) URL 객체를 통해서 HttpURLConnection 객체 생성
+		HttpURLConnection urlConn = (HttpURLConnection) requestURL.openConnection();
+		
+		BufferedReader br;
+		// 통신 성공 여부 체크
+		if(urlConn.getResponseCode() == HttpServletResponse.SC_OK) {
+			br = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+		} else {
+			br = new BufferedReader(new InputStreamReader(urlConn.getErrorStream()));
+		}
+		
+		// 응답 결과를 변수에 저장
+
+		String line; // 하나 씩 읽는 용도
+		StringBuilder responseData = new StringBuilder(); // 실제로 데이터를 저장할 곳. 응답데이터 결과가 클 시 특정 메모리영역에 저장하는것이 효율적이므로 StringBuilder 사용
+		// String을 사용 시 상수 풀에 저장되므로 비효율적
+		while((line = br.readLine()) != null) {
+			responseData.append(line);
+		}
+
+		// 자원반납
+		br.close();
+		urlConn.disconnect();
+
+		if(urlConn.getResponseCode() == HttpServletResponse.SC_OK) {
+			return responseData.toString();
+		} else {
+			System.out.println(responseData); // 실제 서비스에서는 로그로..
+			return null;
+		}
+	}
+
+	private List<AirVO> setListAirVO(JsonArray items) {
+		List<AirVO> list = new ArrayList<>();
+		for(int i = 0; i < items.size(); i++) {
+			JsonObject item = items.get(i).getAsJsonObject();
+			System.out.println("item : " + item);
+			
+			AirVO air = new AirVO();
+			
+			air.setStationName(getValue(item, "stationName"));
+			air.setDataTime(getValue(item, "dataTime"));
+			air.setKhaiValue(getValue(item, "khaiValue"));
+			air.setCoValue(getValue(item, "coValue"));
+			air.setNo2Value(getValue(item, "no2Value"));
+			air.setO3Value(getValue(item, "o3Value"));
+			air.setPm10Value(getValue(item, "pm10Value"));
+			air.setSo2Value(getValue(item, "so2Value"));
+			
+			list.add(air);
 		}
 		
 		return list;
